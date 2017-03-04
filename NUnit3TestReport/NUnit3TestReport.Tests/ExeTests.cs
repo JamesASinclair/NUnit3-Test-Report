@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace NUnit3TestReport.Tests
 {
     [TestFixture]
-    public class ProgramTests
+    public class ExeTests
     {
         public string ExePath => Path.Combine(TestContext.CurrentContext.TestDirectory, "NUnit3TestReport.exe");
         public string OutputFile => Path.Combine(TestContext.CurrentContext.TestDirectory, "output.html");
@@ -26,7 +26,7 @@ namespace NUnit3TestReport.Tests
         }
 
         [Test]
-        public void IfExe_NotSuppliedWith2Args_PrintsUsageInfo_And_ExitsWithCode1()
+        public void Exe_ShouldPrintUsageInfo_And_ExitsWithCode1_IfNotSuppliedWith2Args()
         {
             // Arrange
 
@@ -47,11 +47,47 @@ namespace NUnit3TestReport.Tests
 
             // Act
             string output = null;
-            var exitcode = CreateProcess(ExePath, $"TestFiles {OutputFile}", out output);
+            var exitcode = CreateProcess(ExePath, $@".\TestFiles {OutputFile}", out output);
 
             // Assert
             Assert.That(exitcode, Is.EqualTo(0), output);
             Assert.That(File.Exists(OutputFile), Is.True);
+        }
+
+        [Test]
+        public void Exe_ShouldProcess_ASingleInputFile()
+        {
+            // Act
+            string output = null;
+            var exitcode = CreateProcess(ExePath, $@".\FilePatternTests\TestFile1.txt {OutputFile}", out output);
+
+            // Assert
+            Assert.That(exitcode, Is.EqualTo(0), output);
+            Assert.That(File.ReadAllText(OutputFile), Does.Contain("1 file(s) processed"));
+        }
+
+        [Test]
+        public void Exe_ShouldProcess_ADirectory()
+        {
+            // Act
+            string output = null;
+            var exitcode = CreateProcess(ExePath, $@".\FilePatternTests\* {OutputFile}", out output);
+
+            // Assert
+            Assert.That(exitcode, Is.EqualTo(0), output);
+            Assert.That(File.ReadAllText(OutputFile), Does.Contain("3 file(s) processed"));
+        }
+
+        [Test]
+        public void Exe_ShouldProcess_AFilePattern()
+        {
+            // Act
+            string output = null;
+            var exitcode = CreateProcess(ExePath, $@".\FilePatternTests\*.txt {OutputFile}", out output);
+
+            // Assert
+            Assert.That(exitcode, Is.EqualTo(0), output);
+            Assert.That(File.ReadAllText(OutputFile), Does.Contain("2 file(s) processed"));
         }
 
         public static int CreateProcess(string filename, string arguments, out string output)

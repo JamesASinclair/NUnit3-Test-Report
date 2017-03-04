@@ -32,9 +32,19 @@ Examples:
                 Environment.Exit(1);
             }
 
+            var files = GetFiles(args[0]);
+
+
             var template = GetEmbeddedResource("NUnit3TestReport.Template.html");
-            File.WriteAllText(args[1], template);
-            Environment.Exit(0);
+            var output = template.Replace("##FileCount##", files.Length.ToString());
+            File.WriteAllText(args[1], output);
+        }
+
+        public static string[] GetFiles(string filePattern)
+        {
+            var folder = Path.GetDirectoryName(filePattern);
+            var searchPattern = Path.GetFileName(filePattern);
+            return Directory.GetFiles(folder, searchPattern);
         }
 
         public static string GetEmbeddedResource(string fullyQualifiedName)
