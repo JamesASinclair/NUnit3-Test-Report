@@ -15,9 +15,23 @@ namespace NUnit3TestReport
         {
             if (args.Length != 2)
             {
-                var info = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
+                PrintUsage();
+                Environment.Exit(1);
+            }
 
-                Console.WriteLine($@"{info.InternalName}
+            var files = GetFiles(args[0]);
+
+
+            var template = GetEmbeddedResource("NUnit3TestReport.Template.html");
+            var output = template.Replace("##FileCount##", files.Length.ToString());
+            File.WriteAllText(args[1], output);
+        }
+
+        private static void PrintUsage()
+        {
+            var info = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
+
+            Console.WriteLine($@"{info.InternalName}
 Version {info.ProductVersion}
 {info.LegalCopyright}
 
@@ -29,15 +43,6 @@ Examples:
     Single input file: {info.InternalName} TestResults.xml TestResult.html
     Folder:            {info.InternalName} C:\Folder\* TestResult.html
     File pattern:      {info.InternalName} C:\Folder\*.xml TestResult.html");
-                Environment.Exit(1);
-            }
-
-            var files = GetFiles(args[0]);
-
-
-            var template = GetEmbeddedResource("NUnit3TestReport.Template.html");
-            var output = template.Replace("##FileCount##", files.Length.ToString());
-            File.WriteAllText(args[1], output);
         }
 
         public static string[] GetFiles(string filePattern)
