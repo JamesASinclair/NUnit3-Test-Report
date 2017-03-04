@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -31,6 +32,17 @@ Examples:
                 Environment.Exit(1);
             }
 
+            var template = GetEmbeddedResource("NUnit3TestReport.Template.html");
+            File.WriteAllText(args[1], template);
+            Environment.Exit(0);
+        }
+
+        public static string GetEmbeddedResource(string fullyQualifiedName)
+        {
+            using (var reader = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream(fullyQualifiedName)))
+            {
+                return reader.ReadToEnd();
+            }
         }
     }
 }
