@@ -90,6 +90,50 @@ namespace NUnit3TestReport.Tests
             Assert.That(File.ReadAllText(OutputFile), Does.Contain("2 file(s) processed"));
         }
 
+        #region GetProperties
+
+        [Test]
+        public void GetProperties_ShouldHandleNull()
+        {
+            // Arrange
+            string[] files = null;
+
+            // Act
+            var result = Program.GetProperties(files);
+
+            // Assert
+            Assert.That(result, Is.Empty);
+        }
+
+        [Test]
+        public void GetProperties_ShouldAssign_Properties_FromXml()
+        {
+            // Arrange
+            string[] files = { $@"{TestContext.CurrentContext.TestDirectory}\Example.test.xml" };
+
+            // Act
+            var result = Program.GetProperties(files);
+
+            // Assert
+            Assert.That(result, Is.Not.Empty);
+            Assert.That(result[0].Assembly, Is.EqualTo("Example.Test.Dll"));
+            Assert.That(result[0].Result, Is.EqualTo("Passed"));
+            Assert.That(result[0].Total, Is.EqualTo(28));
+            Assert.That(result[0].Passed, Is.EqualTo(25));
+            Assert.That(result[0].Failed, Is.EqualTo(0));
+            Assert.That(result[0].Inconclusive, Is.EqualTo(1));
+            Assert.That(result[0].Skipped, Is.EqualTo(2));
+            Assert.That(result[0].Duration, Is.EqualTo(2.171041m));
+        }
+
+        [Test]
+        public void GetProperties_ShouldHandleMultipleFiles()
+        {
+            // Next up!
+        }
+
+        #endregion
+
         public static int CreateProcess(string filename, string arguments, out string output)
         {
             Process process = new Process

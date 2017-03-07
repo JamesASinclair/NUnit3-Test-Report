@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace NUnit3TestReport
 {
@@ -21,6 +22,10 @@ namespace NUnit3TestReport
 
             var files = GetFiles(args[0]);
 
+            // Get properties from xml files
+            var properties = GetProperties(files);
+
+            // Merge properties with template file
 
             var template = GetEmbeddedResource("NUnit3TestReport.Template.html");
             var output = template.Replace("##FileCount##", files.Length.ToString());
@@ -59,5 +64,46 @@ Examples:
                 return reader.ReadToEnd();
             }
         }
+
+        public static List<TemplateProperties> GetProperties(string[] files)
+        {
+            var properties = new List<TemplateProperties>();
+
+            if (files != null && files.Length > 0)
+            {
+                foreach (var file in files)
+                {
+                    var xml = XElement.Load(file);
+
+                    var templateproperties = new TemplateProperties
+                    {
+                        Assembly = Path.GetFileName(xml.Element("test-suite").Attribute("name").Value),
+                        Result = xml.Element("test-suite").Attribute("result").Value,
+                        Total = int.Parse(!string.IsNullOrEmpty(xml.Attribute("total").Value) ? xml.Attribute("total").Value : "0"),
+                        Passed = int.Parse(!string.IsNullOrEmpty(xml.Attribute("passed").Value) ? xml.Attribute("passed").Value : "0"),
+                        Failed = int.Parse(!string.IsNullOrEmpty(xml.Attribute("failed").Value) ? xml.Attribute("failed").Value : "0"),
+                        Inconclusive = int.Parse(!string.IsNullOrEmpty(xml.Attribute("inconclusive").Value) ? xml.Attribute("inconclusive").Value : "0"),
+                        Skipped = int.Parse(!string.IsNullOrEmpty(xml.Attribute("skipped").Value) ? xml.Attribute("skipped").Value : "0"),
+                        Duration = decimal.Parse(!string.IsNullOrEmpty(xml.Attribute("duration").Value) ? xml.Attribute("duration").Value : "0")
+                    };
+
+                    properties.Add(templateproperties);
+                }
+            }
+
+            return properties;
+        }
+    }
+
+    public class TemplateProperties
+    {
+        public string Assembly { get; set; }
+        public string Result { get; set; }
+        public int Total { get; set; }
+        public int Passed { get; set; }
+        public int Failed { get; set; }
+        public int Inconclusive { get; set; }
+        public int Skipped { get; set; }
+        public decimal Duration { get; set; }
     }
 }
