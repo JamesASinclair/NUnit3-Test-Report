@@ -24,11 +24,30 @@ namespace NUnit3TestReport
             var files = GetFiles(args[0]);
 
             // Get properties from xml files
-            var properties = GetProperties(files);
+            var testResults = new List<TestResultData>();
+            foreach (var file in files)
+            {
+                string fileContent = null;
+                try
+                {
+                    fileContent = File.ReadAllText(file);
+                }
+                catch { }
+
+                if (fileContent != null)
+                {
+                    var testResultData = GetTestResultData(fileContent);
+
+                    if (testResultData != null)
+                    {
+                        testResults.Add(testResultData);
+                    }
+                }
+            }
 
             // Merge properties with template file
-
             var template = GetEmbeddedResource("NUnit3TestReport.Template.html");
+
             var output = template.Replace("##FileCount##", files.Length.ToString());
             File.WriteAllText(args[1], output);
         }
@@ -66,48 +85,34 @@ Examples:
             }
         }
 
-        public static List<TemplateProperties> GetProperties(string[] files)
+        public static TestResultData GetTestResultData(string xml)
         {
-            var properties = new List<TemplateProperties>();
-
-            if (files != null && files.Length > 0)
+            if (xml != null)
             {
-                foreach (var file in files)
+                try
                 {
-                    XElement xml = null;
-                    try
+                    var xElement = XElement.Parse(xml);
+                    var templateproperties = new TestResultData
                     {
-                        xml = XElement.Load(file);
-                    }
-                    catch(XmlException e)
-                    {
-                        // do something with the empty file
-                    }
+                        Assembly = Path.GetFileName(xElement.Element("test-suite").Attribute("name").Value),
+                        Result = xElement.Element("test-suite").Attribute("result").Value,
+                        Total = int.Parse(!string.IsNullOrEmpty(xElement.Attribute("total").Value) ? xElement.Attribute("total").Value : "0"),
+                        Passed = int.Parse(!string.IsNullOrEmpty(xElement.Attribute("passed").Value) ? xElement.Attribute("passed").Value : "0"),
+                        Failed = int.Parse(!string.IsNullOrEmpty(xElement.Attribute("failed").Value) ? xElement.Attribute("failed").Value : "0"),
+                        Inconclusive = int.Parse(!string.IsNullOrEmpty(xElement.Attribute("inconclusive").Value) ? xElement.Attribute("inconclusive").Value : "0"),
+                        Skipped = int.Parse(!string.IsNullOrEmpty(xElement.Attribute("skipped").Value) ? xElement.Attribute("skipped").Value : "0"),
+                        Duration = decimal.Parse(!string.IsNullOrEmpty(xElement.Attribute("duration").Value) ? xElement.Attribute("duration").Value : "0")
+                    };
 
-                    if (xml != null)
-                    {
-                        var templateproperties = new TemplateProperties
-                        {
-                            Assembly = Path.GetFileName(xml.Element("test-suite").Attribute("name").Value),
-                            Result = xml.Element("test-suite").Attribute("result").Value,
-                            Total = int.Parse(!string.IsNullOrEmpty(xml.Attribute("total").Value) ? xml.Attribute("total").Value : "0"),
-                            Passed = int.Parse(!string.IsNullOrEmpty(xml.Attribute("passed").Value) ? xml.Attribute("passed").Value : "0"),
-                            Failed = int.Parse(!string.IsNullOrEmpty(xml.Attribute("failed").Value) ? xml.Attribute("failed").Value : "0"),
-                            Inconclusive = int.Parse(!string.IsNullOrEmpty(xml.Attribute("inconclusive").Value) ? xml.Attribute("inconclusive").Value : "0"),
-                            Skipped = int.Parse(!string.IsNullOrEmpty(xml.Attribute("skipped").Value) ? xml.Attribute("skipped").Value : "0"),
-                            Duration = decimal.Parse(!string.IsNullOrEmpty(xml.Attribute("duration").Value) ? xml.Attribute("duration").Value : "0")
-                        };
-
-                        properties.Add(templateproperties);
-                    }
+                    return templateproperties;
                 }
+                catch { }
             }
-
-            return properties;
+            return null;
         }
     }
 
-    public class TemplateProperties
+    public class TestResultData
     {
         public string Assembly { get; set; }
         public string Result { get; set; }

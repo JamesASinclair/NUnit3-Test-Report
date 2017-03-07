@@ -96,34 +96,48 @@ namespace NUnit3TestReport.Tests
         public void GetProperties_ShouldHandleNull()
         {
             // Arrange
-            string[] files = null;
+            string file = null;
 
             // Act
-            var result = Program.GetProperties(files);
+            var result = Program.GetTestResultData(file);
 
             // Assert
-            Assert.That(result, Is.Empty);
+            Assert.That(result, Is.Null);
         }
 
         [Test]
         public void GetProperties_ShouldAssign_Properties_FromXml()
         {
             // Arrange
-            string[] files = { $@"{TestContext.CurrentContext.TestDirectory}\Example.test.xml" };
+            string file = @"<?xml version='1.0' encoding='utf-8' standalone='no'?>
+<test-run id='2' testcasecount='28' result='Passed' total='28' passed='25' failed='0' inconclusive='1' skipped='2' asserts='467' engine-version='3.6.0.0' clr-version='4.0.30319.42000' start-time='2017-03-02 16:45:23Z' end-time='2017-03-02 16:45:25Z' duration='2.171041'>
+  <test-suite type='Assembly' id='0-1033' name='Example.Test.Dll' fullname='C:\src\Example.Test\bin\Release\Example.Test.Dll' runstate='Runnable' testcasecount='28' result='Passed' start-time='2017-03-02 16:45:23Z' end-time='2017-03-02 16:45:25Z' duration='1.363629' total='28' passed='28' failed='0' warnings='0' inconclusive='0' skipped='0' asserts='467'>
+    <environment framework-version='3.6.0.0' clr-version='4.0.30319.42000' os-version='Microsoft Windows NT 10.0.14393.0' platform='Win32NT' cwd='C:\TfsProjects\Root\Directa\DirectaTrunk\Deployment' machine-name='BIOMMAT' user='mat.roberts' user-domain='BIOMNI-UK' culture='en-GB' uiculture='en-GB' os-architecture='x64' />
+    <settings>
+      <!-- Elements removed as not required -->
+    </settings>
+    <properties>
+      <!-- Elements removed as not required -->
+    </properties>
+    <test-suite type='TestSuite' id='0-1034' name='ExampleTestSuiteName' fullname='ExampleTestSuiteName' runstate='Runnable' testcasecount='28' result='Passed' start-time='2017-03-02 16:45:23Z' end-time='2017-03-02 16:45:25Z' duration='1.343287' total='28' passed='28' failed='0' warnings='0' inconclusive='0' skipped='0' asserts='467'>
+      <!-- Elements removed as not required -->
+    </test-suite>
+  </test-suite>
+</test-run>
+";
 
             // Act
-            var result = Program.GetProperties(files);
+            var result = Program.GetTestResultData(file);
 
             // Assert
-            Assert.That(result, Is.Not.Empty);
-            Assert.That(result[0].Assembly, Is.EqualTo("Example.Test.Dll"));
-            Assert.That(result[0].Result, Is.EqualTo("Passed"));
-            Assert.That(result[0].Total, Is.EqualTo(28));
-            Assert.That(result[0].Passed, Is.EqualTo(25));
-            Assert.That(result[0].Failed, Is.EqualTo(0));
-            Assert.That(result[0].Inconclusive, Is.EqualTo(1));
-            Assert.That(result[0].Skipped, Is.EqualTo(2));
-            Assert.That(result[0].Duration, Is.EqualTo(2.171041m));
+            Assert.That(result.Assembly, Is.EqualTo("Example.Test.Dll"));
+            Assert.That(result.Result, Is.EqualTo("Passed"));
+            Assert.That(result.Total, Is.EqualTo(28));
+            Assert.That(result.Passed, Is.EqualTo(25));
+            Assert.That(result.Failed, Is.EqualTo(0));
+            Assert.That(result.Inconclusive, Is.EqualTo(1));
+            Assert.That(result.Skipped, Is.EqualTo(2));
+            Assert.That(result.Duration, Is.EqualTo(2.171041m));
         }
 
         [Test]
