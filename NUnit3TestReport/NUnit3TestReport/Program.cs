@@ -45,10 +45,17 @@ namespace NUnit3TestReport
                 }
             }
 
+            // Generate table rows to insert into template
+            var tableRowsHtml = "";
+            foreach (var testResult in testResults)
+            {
+                tableRowsHtml += testResult.ToHtml();
+            }
+
             // Merge properties with template file
             var template = GetEmbeddedResource("NUnit3TestReport.Template.html");
-
-            var output = template.Replace("##FileCount##", files.Length.ToString());
+            var output = template.Replace("##TestResults##", tableRowsHtml);
+            output = output.Replace("##FileCount##", files.Length.ToString());
             File.WriteAllText(args[1], output);
         }
 
@@ -122,5 +129,19 @@ Examples:
         public int Inconclusive { get; set; }
         public int Skipped { get; set; }
         public decimal Duration { get; set; }
+
+        public string ToHtml()
+        {
+            return $@"<tr>
+                    <th>{Assembly}</th>
+                    <th>{Result}</th>
+                    <th>{Total}</th>
+                    <th>{Passed}</th>
+                    <th>{Failed}</th>
+                    <th>{Inconclusive}</th>
+                    <th>{Skipped}</th>
+                    <th>{Duration}</th>
+                </tr>";
+        }
     }
 }
