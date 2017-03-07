@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace NUnit3TestReport
@@ -73,21 +74,32 @@ Examples:
             {
                 foreach (var file in files)
                 {
-                    var xml = XElement.Load(file);
-
-                    var templateproperties = new TemplateProperties
+                    XElement xml = null;
+                    try
                     {
-                        Assembly = Path.GetFileName(xml.Element("test-suite").Attribute("name").Value),
-                        Result = xml.Element("test-suite").Attribute("result").Value,
-                        Total = int.Parse(!string.IsNullOrEmpty(xml.Attribute("total").Value) ? xml.Attribute("total").Value : "0"),
-                        Passed = int.Parse(!string.IsNullOrEmpty(xml.Attribute("passed").Value) ? xml.Attribute("passed").Value : "0"),
-                        Failed = int.Parse(!string.IsNullOrEmpty(xml.Attribute("failed").Value) ? xml.Attribute("failed").Value : "0"),
-                        Inconclusive = int.Parse(!string.IsNullOrEmpty(xml.Attribute("inconclusive").Value) ? xml.Attribute("inconclusive").Value : "0"),
-                        Skipped = int.Parse(!string.IsNullOrEmpty(xml.Attribute("skipped").Value) ? xml.Attribute("skipped").Value : "0"),
-                        Duration = decimal.Parse(!string.IsNullOrEmpty(xml.Attribute("duration").Value) ? xml.Attribute("duration").Value : "0")
-                    };
+                        xml = XElement.Load(file);
+                    }
+                    catch(XmlException e)
+                    {
+                        // do something with the empty file
+                    }
 
-                    properties.Add(templateproperties);
+                    if (xml != null)
+                    {
+                        var templateproperties = new TemplateProperties
+                        {
+                            Assembly = Path.GetFileName(xml.Element("test-suite").Attribute("name").Value),
+                            Result = xml.Element("test-suite").Attribute("result").Value,
+                            Total = int.Parse(!string.IsNullOrEmpty(xml.Attribute("total").Value) ? xml.Attribute("total").Value : "0"),
+                            Passed = int.Parse(!string.IsNullOrEmpty(xml.Attribute("passed").Value) ? xml.Attribute("passed").Value : "0"),
+                            Failed = int.Parse(!string.IsNullOrEmpty(xml.Attribute("failed").Value) ? xml.Attribute("failed").Value : "0"),
+                            Inconclusive = int.Parse(!string.IsNullOrEmpty(xml.Attribute("inconclusive").Value) ? xml.Attribute("inconclusive").Value : "0"),
+                            Skipped = int.Parse(!string.IsNullOrEmpty(xml.Attribute("skipped").Value) ? xml.Attribute("skipped").Value : "0"),
+                            Duration = decimal.Parse(!string.IsNullOrEmpty(xml.Attribute("duration").Value) ? xml.Attribute("duration").Value : "0")
+                        };
+
+                        properties.Add(templateproperties);
+                    }
                 }
             }
 
