@@ -27,22 +27,7 @@ namespace NUnit3TestReport
             var testResults = new List<TestResultData>();
             foreach (var file in files)
             {
-                string fileContent = null;
-                try
-                {
-                    fileContent = File.ReadAllText(file);
-                }
-                catch { }
-
-                if (fileContent != null)
-                {
-                    var testResultData = GetTestResultData(fileContent);
-
-                    if (testResultData != null)
-                    {
-                        testResults.Add(testResultData);
-                    }
-                }
+                testResults.Add(GetTestResultData(File.ReadAllText(file)));
             }
 
             // Generate table rows to insert into template
@@ -94,33 +79,32 @@ Examples:
 
         public static TestResultData GetTestResultData(string xml)
         {
-            if (xml != null)
+            try
             {
-                try
+                var xElement = XElement.Parse(xml);
+                return new TestResultData
                 {
-                    var xElement = XElement.Parse(xml);
-                    var templateproperties = new TestResultData
-                    {
-                        Assembly = Path.GetFileName(xElement.Element("test-suite").Attribute("name").Value),
-                        Result = xElement.Element("test-suite").Attribute("result").Value,
-                        Total = int.Parse(!string.IsNullOrEmpty(xElement.Attribute("total").Value) ? xElement.Attribute("total").Value : "0"),
-                        Passed = int.Parse(!string.IsNullOrEmpty(xElement.Attribute("passed").Value) ? xElement.Attribute("passed").Value : "0"),
-                        Failed = int.Parse(!string.IsNullOrEmpty(xElement.Attribute("failed").Value) ? xElement.Attribute("failed").Value : "0"),
-                        Inconclusive = int.Parse(!string.IsNullOrEmpty(xElement.Attribute("inconclusive").Value) ? xElement.Attribute("inconclusive").Value : "0"),
-                        Skipped = int.Parse(!string.IsNullOrEmpty(xElement.Attribute("skipped").Value) ? xElement.Attribute("skipped").Value : "0"),
-                        Duration = decimal.Parse(!string.IsNullOrEmpty(xElement.Attribute("duration").Value) ? xElement.Attribute("duration").Value : "0")
-                    };
-
-                    return templateproperties;
-                }
-                catch { }
+                    IsValid = true,
+                    Assembly = Path.GetFileName(xElement.Element("test-suite").Attribute("name").Value),
+                    Result = xElement.Element("test-suite").Attribute("result").Value,
+                    Total = int.Parse(!string.IsNullOrEmpty(xElement.Attribute("total").Value) ? xElement.Attribute("total").Value : "0"),
+                    Passed = int.Parse(!string.IsNullOrEmpty(xElement.Attribute("passed").Value) ? xElement.Attribute("passed").Value : "0"),
+                    Failed = int.Parse(!string.IsNullOrEmpty(xElement.Attribute("failed").Value) ? xElement.Attribute("failed").Value : "0"),
+                    Inconclusive = int.Parse(!string.IsNullOrEmpty(xElement.Attribute("inconclusive").Value) ? xElement.Attribute("inconclusive").Value : "0"),
+                    Skipped = int.Parse(!string.IsNullOrEmpty(xElement.Attribute("skipped").Value) ? xElement.Attribute("skipped").Value : "0"),
+                    Duration = decimal.Parse(!string.IsNullOrEmpty(xElement.Attribute("duration").Value) ? xElement.Attribute("duration").Value : "0")
+                };
             }
-            return null;
+            catch
+            {
+                return new TestResultData() {IsValid = false};
+            }
         }
     }
 
     public class TestResultData
     {
+        public bool IsValid { get; set; }
         public string Assembly { get; set; }
         public string Result { get; set; }
         public int Total { get; set; }

@@ -93,7 +93,7 @@ namespace NUnit3TestReport.Tests
         #region GetProperties
 
         [Test]
-        public void GetProperties_ShouldHandleNull()
+        public void GetProperties_IfTheFileContentsCannotBeParse_TheTestResultsShouldBeInvlaid()
         {
             // Arrange
             string file = null;
@@ -102,11 +102,11 @@ namespace NUnit3TestReport.Tests
             var result = Program.GetTestResultData(file);
 
             // Assert
-            Assert.That(result, Is.Null);
+            Assert.That(result.IsValid, Is.False);
         }
 
         [Test]
-        public void GetProperties_ShouldAssign_Properties_FromXml()
+        public void GetProperties_IfTheFileContentsCanBeParsed_ShouldAssignPropertiesFromXml_AndSetIsValueTrue()
         {
             // Arrange
             string file = @"<?xml version='1.0' encoding='utf-8' standalone='no'?>
@@ -131,6 +131,7 @@ namespace NUnit3TestReport.Tests
 
             // Assert
             Assert.That(result.Assembly, Is.EqualTo("Example.Test.Dll"));
+            Assert.That(result.IsValid, Is.True);
             Assert.That(result.Result, Is.EqualTo("Passed"));
             Assert.That(result.Total, Is.EqualTo(28));
             Assert.That(result.Passed, Is.EqualTo(25));
