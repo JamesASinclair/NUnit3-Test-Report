@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project ToolsVersion="4.0" DefaultTargets="Test" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+		<Configuration>Release</Configuration>
+	</PropertyGroup>
+
+	<PropertyGroup>
+    <NUnitConsole>$(MSBuildProjectDirectory)\..\..\..\packages\NUnit.ConsoleRunner.3.6.1\tools\nunit3-console.exe</NUnitConsole>
+  </PropertyGroup>
+
+  <Target Name="Test">
+    <ItemGroup>
+      <TestDlls Include="$(MSBuildProjectDirectory)\NUnit3TestReport.Examples.dll" />
+    </ItemGroup>
+
+    <Exec Command="&quot;$(NUnitConsole)&quot; %(TestDlls.Identity) --framework=net-4.5 --result:$(MSBuildProjectDirectory)\%(TestDlls.Filename).test.xml" ContinueOnError="true"/>
+  </Target>  
+</Project>
