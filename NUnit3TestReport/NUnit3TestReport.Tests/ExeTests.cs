@@ -90,7 +90,17 @@ namespace NUnit3TestReport.Tests
             Assert.That(File.ReadAllText(OutputFile), Does.Contain("2 file(s) processed"));
         }
 
+        [Test]
+        public void Exe_IfTheFileCannotBeParsed_TheTestResultFileShouldSaySo()
+        {
+            // Act
+            string output = null;
+            var exitcode = CreateProcess(ExePath, $@".\FileContentTests\EmptyFile.xml {OutputFile}", out output);
 
+            // Assert
+            Assert.That(exitcode, Is.EqualTo(0), output);
+            Assert.That(File.ReadAllText(OutputFile), Does.Contain("<tr><th>EmptyFile.xml</th><td colspan='7'>File Could Not Be Parsed</td></tr>"));
+        }
 
         public static int CreateProcess(string filename, string arguments, out string output)
         {

@@ -24,7 +24,7 @@ namespace NUnit3TestReport
             var testResults = new List<TestResultData>();
             foreach (var file in files)
             {
-                testResults.Add(GetTestResultData(file, File.ReadAllText(file)));
+                testResults.Add(GetTestResultData(Path.GetFileName(file), File.ReadAllText(file)));
             }
 
             var tableRowsHtml = new StringBuilder();
