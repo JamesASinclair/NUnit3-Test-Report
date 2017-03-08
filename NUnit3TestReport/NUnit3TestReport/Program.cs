@@ -5,8 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 using System.Xml.Linq;
 
 namespace NUnit3TestReport
@@ -113,16 +111,23 @@ Examples:
 
         public string ToHtml()
         {
-            return $@"<tr>
+            if (IsValid)
+            {
+                return $@"<tr>
                     <th>{FileName}</th>
-                    <th>{Result}</th>
-                    <th>{Total}</th>
-                    <th>{Passed}</th>
-                    <th>{Failed}</th>
-                    <th>{Inconclusive}</th>
-                    <th>{Skipped}</th>
-                    <th>{Duration}</th>
+                    <td>{Result}</td>
+                    <td>{Total}</td>
+                    <td>{Passed}</td>
+                    <td>{Failed}</td>
+                    <td>{Inconclusive}</td>
+                    <td>{Skipped}</td>
+                    <td>{Duration}</td>
                 </tr>";
+            }
+            else
+            {
+                return $@"<tr><th>{FileName}</th><td colspan='7'>File Could Not Be Parsed</td></tr>";
+            }
         }
     }
 }
