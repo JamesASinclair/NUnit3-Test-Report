@@ -95,11 +95,8 @@ namespace NUnit3TestReport.Tests
         [Test]
         public void GetProperties_IfTheFileContentsCannotBeParse_TheTestResultsShouldBeInvlaid()
         {
-            // Arrange
-            string file = null;
-
-            // Act
-            var result = Program.GetTestResultData(file);
+            // Arrange/Act
+            var result = Program.GetTestResultData("invalidfile.txt", null);
 
             // Assert
             Assert.That(result.IsValid, Is.False);
@@ -127,10 +124,10 @@ namespace NUnit3TestReport.Tests
 ";
 
             // Act
-            var result = Program.GetTestResultData(file);
+            var result = Program.GetTestResultData("validfile.txt", file);
 
             // Assert
-            Assert.That(result.Assembly, Is.EqualTo("Example.Test.Dll"));
+            Assert.That(result.FileName, Is.EqualTo("validfile.txt"));
             Assert.That(result.IsValid, Is.True);
             Assert.That(result.Result, Is.EqualTo("Passed"));
             Assert.That(result.Total, Is.EqualTo(28));
@@ -139,12 +136,6 @@ namespace NUnit3TestReport.Tests
             Assert.That(result.Inconclusive, Is.EqualTo(1));
             Assert.That(result.Skipped, Is.EqualTo(2));
             Assert.That(result.Duration, Is.EqualTo(2.171041m));
-        }
-
-        [Test]
-        public void GetProperties_ShouldHandleMultipleFiles()
-        {
-            // Next up!
         }
 
         #endregion

@@ -23,23 +23,20 @@ namespace NUnit3TestReport
 
             var files = GetFiles(args[0]);
 
-            // Get properties from xml files
             var testResults = new List<TestResultData>();
             foreach (var file in files)
             {
-                testResults.Add(GetTestResultData(File.ReadAllText(file)));
+                testResults.Add(GetTestResultData(file, File.ReadAllText(file)));
             }
 
-            // Generate table rows to insert into template
-            var tableRowsHtml = "";
+            var tableRowsHtml = new StringBuilder();
             foreach (var testResult in testResults)
             {
-                tableRowsHtml += testResult.ToHtml();
+                tableRowsHtml.AppendLine(testResult.ToHtml());
             }
 
-            // Merge properties with template file
             var template = GetEmbeddedResource("NUnit3TestReport.Template.html");
-            var output = template.Replace("##TestResults##", tableRowsHtml);
+            var output = template.Replace("##TestResults##", tableRowsHtml.ToString());
             output = output.Replace("##FileCount##", files.Length.ToString());
             File.WriteAllText(args[1], output);
         }
@@ -77,15 +74,15 @@ Examples:
             }
         }
 
-        public static TestResultData GetTestResultData(string xml)
+        public static TestResultData GetTestResultData(string filename, string fileContents)
         {
             try
             {
-                var xElement = XElement.Parse(xml);
+                var xElement = XElement.Parse(fileContents);
                 return new TestResultData
                 {
                     IsValid = true,
-                    Assembly = Path.GetFileName(xElement.Element("test-suite").Attribute("name").Value),
+                    FileName = filename,
                     Result = xElement.Element("test-suite").Attribute("result").Value,
                     Total = int.Parse(!string.IsNullOrEmpty(xElement.Attribute("total").Value) ? xElement.Attribute("total").Value : "0"),
                     Passed = int.Parse(!string.IsNullOrEmpty(xElement.Attribute("passed").Value) ? xElement.Attribute("passed").Value : "0"),
@@ -97,7 +94,7 @@ Examples:
             }
             catch
             {
-                return new TestResultData() {IsValid = false};
+                return new TestResultData() {IsValid = false, FileName = filename };
             }
         }
     }
@@ -105,7 +102,7 @@ Examples:
     public class TestResultData
     {
         public bool IsValid { get; set; }
-        public string Assembly { get; set; }
+        public string FileName { get; set; }
         public string Result { get; set; }
         public int Total { get; set; }
         public int Passed { get; set; }
@@ -117,7 +114,7 @@ Examples:
         public string ToHtml()
         {
             return $@"<tr>
-                    <th>{Assembly}</th>
+                    <th>{FileName}</th>
                     <th>{Result}</th>
                     <th>{Total}</th>
                     <th>{Passed}</th>
