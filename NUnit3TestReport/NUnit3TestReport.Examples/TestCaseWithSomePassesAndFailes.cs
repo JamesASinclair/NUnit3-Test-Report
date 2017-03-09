@@ -2,7 +2,7 @@
 
 namespace NUnit3TestReport.Examples
 {
-    [TestFixture]
+    [TestFixture, Category("ExcludeOnBuildServer")]
     public class TestCaseWithSomePassesAndFailes
     {
         [TestCase(1, 1)]

@@ -7,7 +7,7 @@ using NUnit.Framework;
 
 namespace NUnit3TestReport.Examples
 {
-    [TestFixture]
+    [TestFixture, Category("ExcludeOnBuildServer")]
     public class TestClassWithFailure
     {
         [Test]
