@@ -5,12 +5,18 @@ using NUnit.Framework;
 namespace NUnit3TestReport.Examples
 {
     [TestFixture, Category("ExcludeOnBuildServer")]
-    public class TestClassWithInconclusive
+    public class TestClassWithPasses
     {
         [Test]
-        public void TestInconclusive()
+        public void Test()
         {
-            Assert.Inconclusive();
+            Assert.Pass();
+        }
+
+        [Test]
+        public void Test1()
+        {
+            Assert.Pass();
         }
     }
 }
