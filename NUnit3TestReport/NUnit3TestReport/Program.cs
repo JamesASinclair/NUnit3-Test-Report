@@ -87,7 +87,7 @@ Examples:
                     Failed = int.Parse(!string.IsNullOrEmpty(xElement.Attribute("failed").Value) ? xElement.Attribute("failed").Value : "0"),
                     Inconclusive = int.Parse(!string.IsNullOrEmpty(xElement.Attribute("inconclusive").Value) ? xElement.Attribute("inconclusive").Value : "0"),
                     Skipped = int.Parse(!string.IsNullOrEmpty(xElement.Attribute("skipped").Value) ? xElement.Attribute("skipped").Value : "0"),
-                    Duration = decimal.Parse(!string.IsNullOrEmpty(xElement.Attribute("duration").Value) ? xElement.Attribute("duration").Value : "0")
+                    Duration = double.Parse(!string.IsNullOrEmpty(xElement.Attribute("duration").Value) ? xElement.Attribute("duration").Value : "0")
                 };
             }
             catch
@@ -107,7 +107,7 @@ Examples:
         public int Failed { get; set; }
         public int Inconclusive { get; set; }
         public int Skipped { get; set; }
-        public decimal Duration { get; set; }
+        public double Duration { get; set; }
 
         public string ToHtml()
         {
@@ -116,12 +116,12 @@ Examples:
                 return $@"<tr>
                     <th>{FileName}</th>
                     <td>{Result}</td>
-                    <td>{Total}</td>
-                    <td>{Passed}</td>
-                    <td>{Failed}</td>
-                    <td>{Inconclusive}</td>
-                    <td>{Skipped}</td>
-                    <td>{Duration}</td>
+                    <td class='text-right'>{Passed}</td>
+                    <td class='text-right'>{Failed}</td>
+                    <td class='text-right'>{Inconclusive}</td>
+                    <td class='text-right'>{Skipped}</td>
+                    <td class='text-right'>{Total}</td>
+                    <td class='text-right'>{TimeSpan.FromSeconds(Duration).ToString("g")}</td>
                 </tr>";
             }
             else
