@@ -126,10 +126,7 @@ Examples:
             }
             else
             {
-                return $@"<tr>
-            <td>{FileName}</td>
-            <th colspan='7'>File Could Not Be Parsed</th>
-        </tr>";
+                return $@"<tr><td>{FileName}</td><th colspan='7'>File Could Not Be Parsed</th></tr>";
             }
         }
     }

@@ -99,7 +99,7 @@ namespace NUnit3TestReport.Tests
 
             // Assert
             Assert.That(exitcode, Is.EqualTo(0), output);
-            Assert.That(File.ReadAllText(OutputFile), Does.Contain("<tr><th>EmptyFile.xml</th><td colspan='7'>File Could Not Be Parsed</td></tr>"));
+            Assert.That(File.ReadAllText(OutputFile), Does.Contain("<tr><td>EmptyFile.xml</td><th colspan='7'>File Could Not Be Parsed</th></tr>"));
         }
 
         public static int CreateProcess(string filename, string arguments, out string output)
