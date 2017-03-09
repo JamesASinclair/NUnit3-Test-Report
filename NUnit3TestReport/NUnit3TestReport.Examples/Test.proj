@@ -14,6 +14,8 @@
       <TestDlls Include="$(MSBuildProjectDirectory)\NUnit3TestReport.Examples.dll" />
     </ItemGroup>
 
-    <Exec Command="&quot;$(NUnitConsole)&quot; %(TestDlls.Identity) --framework=net-4.5 --result:$(MSBuildProjectDirectory)\%(TestDlls.Filename).test.xml" ContinueOnError="true"/>
+    <Exec Command="&quot;$(NUnitConsole)&quot; %(TestDlls.Identity) --framework=net-4.5 --result:$(MSBuildProjectDirectory)\Failures.test.xml" ContinueOnError="true"/>
+    <Exec Command="&quot;$(NUnitConsole)&quot; %(TestDlls.Identity) --framework=net-4.5 --where &quot;test=NUnit3TestReport.Examples.TestClassWithPasses&quot; --result:$(MSBuildProjectDirectory)\Passed.test.xml" ContinueOnError="true"/>
+    <Exec Command="NUnit3TestReport.exe $(MSBuildProjectDirectory)\*test.xml $(MSBuildProjectDirectory)\output.html" />
   </Target>  
 </Project>

@@ -82,12 +82,12 @@ Examples:
                     IsValid = true,
                     FileName = filename,
                     Result = xElement.Element("test-suite").Attribute("result").Value,
-                    Total = int.Parse(!string.IsNullOrEmpty(xElement.Attribute("total").Value) ? xElement.Attribute("total").Value : "0"),
-                    Passed = int.Parse(!string.IsNullOrEmpty(xElement.Attribute("passed").Value) ? xElement.Attribute("passed").Value : "0"),
-                    Failed = int.Parse(!string.IsNullOrEmpty(xElement.Attribute("failed").Value) ? xElement.Attribute("failed").Value : "0"),
-                    Inconclusive = int.Parse(!string.IsNullOrEmpty(xElement.Attribute("inconclusive").Value) ? xElement.Attribute("inconclusive").Value : "0"),
-                    Skipped = int.Parse(!string.IsNullOrEmpty(xElement.Attribute("skipped").Value) ? xElement.Attribute("skipped").Value : "0"),
-                    Duration = double.Parse(!string.IsNullOrEmpty(xElement.Attribute("duration").Value) ? xElement.Attribute("duration").Value : "0")
+                    Total = int.Parse(xElement.Attribute("total").Value),
+                    Passed = int.Parse(xElement.Attribute("passed").Value),
+                    Failed = int.Parse(xElement.Attribute("failed").Value),
+                    Inconclusive = int.Parse(xElement.Attribute("inconclusive").Value),
+                    Skipped = int.Parse(xElement.Attribute("skipped").Value),
+                    Duration = double.Parse(xElement.Attribute("duration").Value)
                 };
             }
             catch
@@ -114,19 +114,22 @@ Examples:
             if (IsValid)
             {
                 return $@"<tr>
-                    <th>{FileName}</th>
-                    <td>{Result}</td>
+                    <td>{FileName}</td>
+                    <th class='{(Result.Equals("Passed") ? "text-success" : "text-danger text-bold")}'>{Result}</th>
                     <td class='text-right'>{Passed}</td>
                     <td class='text-right'>{Failed}</td>
                     <td class='text-right'>{Inconclusive}</td>
                     <td class='text-right'>{Skipped}</td>
                     <td class='text-right'>{Total}</td>
-                    <td class='text-right'>{TimeSpan.FromSeconds(Duration).ToString("g")}</td>
+                    <td class='text-right'>{TimeSpan.FromSeconds(Duration).ToString(@"h\:mm\:ss")}</td>
                 </tr>";
             }
             else
             {
-                return $@"<tr><th>{FileName}</th><td colspan='7'>File Could Not Be Parsed</td></tr>";
+                return $@"<tr>
+            <td>{FileName}</td>
+            <th colspan='7'>File Could Not Be Parsed</th>
+        </tr>";
             }
         }
     }
