@@ -47,6 +47,7 @@
     <Compile Include="ExeTests.cs" />
     <Compile Include="GetTestResultDataTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestResultDataTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

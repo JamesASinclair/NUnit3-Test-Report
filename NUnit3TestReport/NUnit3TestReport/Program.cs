@@ -109,6 +109,8 @@ Examples:
         public int Skipped { get; set; }
         public decimal Duration { get; set; }
 
+        public bool HasFailedTests => this.Failed > 0;
+
         public string ToHtml()
         {
             if (IsValid)
@@ -126,7 +128,7 @@ Examples:
             }
             else
             {
-                return $@"<tr><th>{FileName}</th><td colspan='7'>File Could Not Be Parsed</td></tr>";
+                return $"<tr class='danger'><th>{FileName}</th><td colspan='7'>File could not be parsed</td></tr>";
             }
         }
     }
