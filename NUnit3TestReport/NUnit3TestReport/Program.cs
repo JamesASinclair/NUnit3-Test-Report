@@ -81,7 +81,7 @@ Examples:
                 {
                     IsValid = true,
                     FileName = filename,
-                    Result = xElement.Element("test-suite").Attribute("result").Value,
+                    Result = xElement.Attribute("result").Value,
                     Total = int.Parse(xElement.Attribute("total").Value),
                     Passed = int.Parse(xElement.Attribute("passed").Value),
                     Failed = int.Parse(xElement.Attribute("failed").Value),
