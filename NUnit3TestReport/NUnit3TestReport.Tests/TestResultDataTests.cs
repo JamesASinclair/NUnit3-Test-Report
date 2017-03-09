@@ -42,7 +42,7 @@ namespace NUnit3TestReport.Tests
                 Inconclusive = 0,
                 Passed = 0,
                 Skipped = 0,
-                Duration = 0.45m
+                Duration = 0.45
             };
 
             // Act
@@ -66,7 +66,7 @@ namespace NUnit3TestReport.Tests
                 Inconclusive = 1,
                 Passed = 7,
                 Skipped = 2,
-                Duration = 2.45m
+                Duration = 2.45
             };
 
             // Act
