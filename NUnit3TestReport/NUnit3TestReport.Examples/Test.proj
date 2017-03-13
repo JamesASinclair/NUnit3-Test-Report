@@ -15,7 +15,7 @@
     </ItemGroup>
 
     <Exec Command="&quot;$(NUnitConsole)&quot; %(TestDlls.Identity) --framework=net-4.5 --result:$(MSBuildProjectDirectory)\Failures.test.xml" ContinueOnError="true"/>
-    <Exec Command="&quot;$(NUnitConsole)&quot; %(TestDlls.Identity) --framework=net-4.5 --where &quot;class=NUnit3TestReport.Examples.TestClassWithPasses&quot; --result:$(MSBuildProjectDirectory)\TwoPasses.test.xml" ContinueOnError="true"/>
+    <Exec Command="&quot;$(NUnitConsole)&quot; %(TestDlls.Identity) --framework=net-4.5 --where &quot;class=NUnit3TestReport.Examples.TestClassWithPasses&quot; --result:$(MSBuildProjectDirectory)\OnePass.test.xml" ContinueOnError="true"/>
     <Exec Command="&quot;$(NUnitConsole)&quot; %(TestDlls.Identity) --framework=net-4.5 --where &quot;class=NUnit3TestReport.Examples.TestClassWithFailure&quot; --result:$(MSBuildProjectDirectory)\OneFailure.test.xml" ContinueOnError="true"/>
     <Exec Command="NUnit3TestReport.exe $(MSBuildProjectDirectory)\*test.xml $(MSBuildProjectDirectory)\output.html" />
   </Target>  

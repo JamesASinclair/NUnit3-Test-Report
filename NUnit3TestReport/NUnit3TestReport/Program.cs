@@ -104,7 +104,12 @@ Examples:
             {
                 testResult.TestCases.Add(new TestCase()
                 {
-                    FullName = testCase.Attribute("fullname").Value
+                    FullName = testCase.Attribute("fullname").Value,
+                    Result = testCase.Attribute("result").Value,
+                    Duration = double.Parse(testCase.Attribute("duration").Value),
+                    FailureMessage = testCase.Element("failure")?.Element("message")?.Value ?? string.Empty,
+                    StackTrace = testCase.Element("failure")?.Element("stack-trace")?.Value ?? string.Empty,
+                    Console = testCase.Element("output")?.Value ?? string.Empty,
                 });
             }
         }
@@ -148,8 +153,10 @@ Examples:
     public class TestCase
     {
         public string FullName { get; set; }
-//        public bool Passed { get; set; }
-//        public string StackTrace { get; set; }
-//        public string Console { get; set; }
+        public string Result { get; set; }
+        public double Duration { get; set; }
+        public string FailureMessage { get; set; }
+        public string StackTrace { get; set; }
+        public string Console { get; set; }
     }
 }

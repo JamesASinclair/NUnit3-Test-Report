@@ -54,8 +54,9 @@ namespace NUnit3TestReport.Tests
         }
 
         [Test]
-        public void GetTestResultData_ShouldAlsoReturnDataAboutTheTestCase()
+        public void GetTestResultData_ShouldReturnDataAboutAFailedTestCase()
         {
+            #region xml
             string xml = @"<?xml version=""1.0"" encoding=""utf-8"" standalone=""no""?>
 <test-run id=""2"" testcasecount=""9"" result=""Failed"" total=""1"" passed=""0"" failed=""1"" inconclusive=""0"" skipped=""0"" asserts=""1"" engine-version=""3.6.1.0"" clr-version=""4.0.30319.42000"" start-time=""2017-03-13 20:22:28Z"" end-time=""2017-03-13 20:22:28Z"" duration=""0.653117"">
   <test-suite type=""Assembly"" id=""0-1016"" name=""NUnit3TestReport.Examples.dll"" fullname=""C:\github\NUnit3-Test-Report\NUnit3TestReport\NUnit3TestReport.Examples\bin\Debug\NUnit3TestReport.Examples.dll"" runstate=""Runnable"" testcasecount=""9"" result=""Failed"" site=""Child"" start-time=""2017-03-13 20:22:28Z"" end-time=""2017-03-13 20:22:28Z"" duration=""0.075602"" total=""1"" passed=""0"" failed=""1"" warnings=""0"" inconclusive=""0"" skipped=""0"" asserts=""1"">
@@ -106,13 +107,84 @@ namespace NUnit3TestReport.Tests
     </test-suite>
   </test-suite>
 </test-run>";
+            #endregion
 
             // Act
             var result = Program.GetTestResultData("validfile.txt", xml);
 
             // Assert
+            Assert.That(result.IsValid);
             Assert.That(result.TestCases.Count, Is.EqualTo(1));
             Assert.That(result.TestCases[0].FullName, Is.EqualTo("NUnit3TestReport.Examples.TestClassWithFailure.FailingTest"));
+            Assert.That(result.TestCases[0].Result, Is.EqualTo("Failed"));
+            Assert.That(result.TestCases[0].Duration, Is.EqualTo(0.034799d));
+            Assert.That(result.TestCases[0].FailureMessage, Is.EqualTo(@"  Expected string length 20 but was 16. Strings differ at index 8.
+  Expected: ""this is not the text""
+  But was:  ""this is the text""
+  -------------------^
+"));
+            Assert.That(result.TestCases[0].StackTrace, Is.EqualTo(@"at NUnit3TestReport.Examples.TestClassWithFailure.FailingTest() in C:\github\NUnit3-Test-Report\NUnit3TestReport\NUnit3TestReport.Examples\TestClassWithFailure.cs:line 17
+"));
+            Assert.That(result.TestCases[0].Console, Is.EqualTo(@"Test Console Output
+"));
+        }
+
+        [Test]
+        public void GetTestResultData_ShouldReturnDataAboutAPassedTestCase()
+        {
+            #region xml
+            string xml = @"<?xml version=""1.0"" encoding=""utf-8"" standalone=""no""?>
+<test-run id=""2"" testcasecount=""8"" result=""Passed"" total=""1"" passed=""1"" failed=""0"" inconclusive=""0"" skipped=""0"" asserts=""0"" engine-version=""3.6.1.0"" clr-version=""4.0.30319.42000"" start-time=""2017-03-13 21:09:24Z"" end-time=""2017-03-13 21:09:25Z"" duration=""0.628128"">
+  <command-line><![CDATA[""C:\github\NUnit3-Test-Report\NUnit3TestReport\NUnit3TestReport.Examples\bin\Debug\..\..\..\packages\NUnit.ConsoleRunner.3.6.1\tools\nunit3-console.exe""  C:\github\NUnit3-Test-Report\NUnit3TestReport\NUnit3TestReport.Examples\bin\Debug\NUnit3TestReport.Examples.dll --framework=net-4.5 --where ""class=NUnit3TestReport.Examples.TestClassWithPasses"" --result:C:\github\NUnit3-Test-Report\NUnit3TestReport\NUnit3TestReport.Examples\bin\Debug\OnePass.test.xml]]></command-line>
+  <filter>
+    <class>NUnit3TestReport.Examples.TestClassWithPasses</class>
+  </filter>
+  <test-suite type=""Assembly"" id=""0-1015"" name=""NUnit3TestReport.Examples.dll"" fullname=""C:\github\NUnit3-Test-Report\NUnit3TestReport\NUnit3TestReport.Examples\bin\Debug\NUnit3TestReport.Examples.dll"" runstate=""Runnable"" testcasecount=""8"" result=""Passed"" start-time=""2017-03-13 21:09:25Z"" end-time=""2017-03-13 21:09:25Z"" duration=""0.059607"" total=""1"" passed=""1"" failed=""0"" warnings=""0"" inconclusive=""0"" skipped=""0"" asserts=""0"">
+    <environment framework-version=""3.6.1.0"" clr-version=""4.0.30319.42000"" os-version=""Microsoft Windows NT 10.0.14393.0"" platform=""Win32NT"" cwd=""C:\github\NUnit3-Test-Report\NUnit3TestReport\NUnit3TestReport.Examples\bin\Debug"" machine-name=""BIOMMAT"" user=""mat.roberts"" user-domain=""BIOMNI-UK"" culture=""en-GB"" uiculture=""en-GB"" os-architecture=""x64"" />
+    <settings>
+      <setting name=""RuntimeFramework"" value=""net-4.5"" />
+      <setting name=""DisposeRunners"" value=""True"" />
+      <setting name=""WorkDirectory"" value=""C:\github\NUnit3-Test-Report\NUnit3TestReport\NUnit3TestReport.Examples\bin\Debug"" />
+      <setting name=""ImageRuntimeVersion"" value=""4.0.30319"" />
+      <setting name=""ImageTargetFrameworkName"" value="".NETFramework,Version=v4.6.1"" />
+      <setting name=""ImageRequiresX86"" value=""False"" />
+      <setting name=""ImageRequiresDefaultAppDomainAssemblyResolver"" value=""False"" />
+      <setting name=""NumberOfTestWorkers"" value=""8"" />
+    </settings>
+    <properties>
+      <property name=""_PID"" value=""3824"" />
+      <property name=""_APPDOMAIN"" value=""domain-"" />
+    </properties>
+    <test-suite type=""TestSuite"" id=""0-1016"" name=""NUnit3TestReport"" fullname=""NUnit3TestReport"" runstate=""Runnable"" testcasecount=""8"" result=""Passed"" start-time=""2017-03-13 21:09:25Z"" end-time=""2017-03-13 21:09:25Z"" duration=""0.040046"" total=""1"" passed=""1"" failed=""0"" warnings=""0"" inconclusive=""0"" skipped=""0"" asserts=""0"">
+      <test-suite type=""TestSuite"" id=""0-1017"" name=""Examples"" fullname=""NUnit3TestReport.Examples"" runstate=""Runnable"" testcasecount=""8"" result=""Passed"" start-time=""2017-03-13 21:09:25Z"" end-time=""2017-03-13 21:09:25Z"" duration=""0.036203"" total=""1"" passed=""1"" failed=""0"" warnings=""0"" inconclusive=""0"" skipped=""0"" asserts=""0"">
+        <test-suite type=""TestFixture"" id=""0-1011"" name=""TestClassWithPasses"" fullname=""NUnit3TestReport.Examples.TestClassWithPasses"" classname=""NUnit3TestReport.Examples.TestClassWithPasses"" runstate=""Runnable"" testcasecount=""1"" result=""Passed"" start-time=""2017-03-13 21:09:25Z"" end-time=""2017-03-13 21:09:25Z"" duration=""0.030126"" total=""1"" passed=""1"" failed=""0"" warnings=""0"" inconclusive=""0"" skipped=""0"" asserts=""0"">
+          <properties>
+            <property name=""Category"" value=""ExcludeOnBuildServer"" />
+          </properties>
+          <test-case id=""0-1012"" name=""Test"" fullname=""NUnit3TestReport.Examples.TestClassWithPasses.Test"" methodname=""Test"" classname=""NUnit3TestReport.Examples.TestClassWithPasses"" runstate=""Runnable"" seed=""333093390"" result=""Passed"" start-time=""2017-03-13 21:09:25Z"" end-time=""2017-03-13 21:09:25Z"" duration=""0.019094"" asserts=""0"">
+            <reason>
+              <message><![CDATA[]]></message>
+            </reason>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>";
+            #endregion
+
+            // Act
+            var result = Program.GetTestResultData("validfile.txt", xml);
+
+            // Assert
+            Assert.That(result.IsValid);
+            Assert.That(result.TestCases.Count, Is.EqualTo(1));
+            Assert.That(result.TestCases[0].FullName, Is.EqualTo("NUnit3TestReport.Examples.TestClassWithPasses.Test"));
+            Assert.That(result.TestCases[0].Result, Is.EqualTo("Passed"));
+            Assert.That(result.TestCases[0].Duration, Is.EqualTo(0.019094));
+            Assert.That(result.TestCases[0].FailureMessage, Is.EqualTo(string.Empty));
+            Assert.That(result.TestCases[0].StackTrace, Is.EqualTo(string.Empty));
+            Assert.That(result.TestCases[0].Console, Is.EqualTo(string.Empty));
         }
     }
 }

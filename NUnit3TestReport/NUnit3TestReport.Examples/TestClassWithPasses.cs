@@ -12,11 +12,5 @@ namespace NUnit3TestReport.Examples
         {
             Assert.Pass();
         }
-
-        [Test]
-        public void Test1()
-        {
-            Assert.Pass();
-        }
     }
 }
