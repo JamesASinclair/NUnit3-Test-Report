@@ -13,7 +13,8 @@ namespace NUnit3TestReport.Examples
         [Test]
         public void FailingTest()
         {
-            Assert.Fail();
+            Console.WriteLine("Test Console Output");
+            Assert.That("this is the text", Is.EqualTo("this is not the text"));
         }
     }
 }

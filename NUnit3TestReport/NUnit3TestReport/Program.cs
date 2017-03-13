@@ -76,23 +76,36 @@ Examples:
         {
             try
             {
-                var xElement = XElement.Parse(fileContents);
-                return new TestResultData
+                var doc = XElement.Parse(fileContents);
+                var testResult = new TestResultData
                 {
                     IsValid = true,
                     FileName = filename,
-                    Result = xElement.Attribute("result").Value,
-                    Total = int.Parse(xElement.Attribute("total").Value),
-                    Passed = int.Parse(xElement.Attribute("passed").Value),
-                    Failed = int.Parse(xElement.Attribute("failed").Value),
-                    Inconclusive = int.Parse(xElement.Attribute("inconclusive").Value),
-                    Skipped = int.Parse(xElement.Attribute("skipped").Value),
-                    Duration = double.Parse(xElement.Attribute("duration").Value)
+                    Result = doc.Attribute("result").Value,
+                    Total = int.Parse(doc.Attribute("total").Value),
+                    Passed = int.Parse(doc.Attribute("passed").Value),
+                    Failed = int.Parse(doc.Attribute("failed").Value),
+                    Inconclusive = int.Parse(doc.Attribute("inconclusive").Value),
+                    Skipped = int.Parse(doc.Attribute("skipped").Value),
+                    Duration = double.Parse(doc.Attribute("duration").Value),
                 };
+                ParseTestCases(testResult, doc);
+                return testResult;
             }
             catch
             {
                 return new TestResultData() {IsValid = false, FileName = filename };
+            }
+        }
+
+        private static void ParseTestCases(TestResultData testResult, XElement doc)
+        {
+            foreach (var testCase in doc.Descendants("test-case"))
+            {
+                testResult.TestCases.Add(new TestCase()
+                {
+                    FullName = testCase.Attribute("fullname").Value
+                });
             }
         }
     }
@@ -108,8 +121,7 @@ Examples:
         public int Inconclusive { get; set; }
         public int Skipped { get; set; }
         public double Duration { get; set; }
-
-        public bool HasFailedTests => this.Failed > 0;
+        public List<TestCase> TestCases { get; } = new List<TestCase>();
 
         public string ToHtml()
         {
@@ -131,5 +143,13 @@ Examples:
                 return $"<tr><td>{FileName}</td><th colspan='7' class='text-danger text-bold'>File could not be parsed</th></tr>";
             }
         }
+    }
+
+    public class TestCase
+    {
+        public string FullName { get; set; }
+//        public bool Passed { get; set; }
+//        public string StackTrace { get; set; }
+//        public string Console { get; set; }
     }
 }

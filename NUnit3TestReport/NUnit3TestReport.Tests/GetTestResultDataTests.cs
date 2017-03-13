@@ -18,7 +18,7 @@ namespace NUnit3TestReport.Tests
         }
 
         [Test]
-        public void GetTestResultData_IfTheFileContentsCanBeParsed_ShouldAssignPropertiesFromXml_AndSetIsValueTrue()
+        public void GetTestResultData_IfTheFileContentsCanBeParsed_ShouldAssignPropertiesFromXml_AndSetIsValidTrue()
         {
             // Arrange
             string file = @"<?xml version='1.0' encoding='utf-8' standalone='no'?>
@@ -51,6 +51,68 @@ namespace NUnit3TestReport.Tests
             Assert.That(result.Inconclusive, Is.EqualTo(1));
             Assert.That(result.Skipped, Is.EqualTo(2));
             Assert.That(result.Duration, Is.EqualTo(2.171041m));
+        }
+
+        [Test]
+        public void GetTestResultData_ShouldAlsoReturnDataAboutTheTestCase()
+        {
+            string xml = @"<?xml version=""1.0"" encoding=""utf-8"" standalone=""no""?>
+<test-run id=""2"" testcasecount=""9"" result=""Failed"" total=""1"" passed=""0"" failed=""1"" inconclusive=""0"" skipped=""0"" asserts=""1"" engine-version=""3.6.1.0"" clr-version=""4.0.30319.42000"" start-time=""2017-03-13 20:22:28Z"" end-time=""2017-03-13 20:22:28Z"" duration=""0.653117"">
+  <test-suite type=""Assembly"" id=""0-1016"" name=""NUnit3TestReport.Examples.dll"" fullname=""C:\github\NUnit3-Test-Report\NUnit3TestReport\NUnit3TestReport.Examples\bin\Debug\NUnit3TestReport.Examples.dll"" runstate=""Runnable"" testcasecount=""9"" result=""Failed"" site=""Child"" start-time=""2017-03-13 20:22:28Z"" end-time=""2017-03-13 20:22:28Z"" duration=""0.075602"" total=""1"" passed=""0"" failed=""1"" warnings=""0"" inconclusive=""0"" skipped=""0"" asserts=""1"">
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type=""TestSuite"" id=""0-1017"" name=""NUnit3TestReport"" fullname=""NUnit3TestReport"" runstate=""Runnable"" testcasecount=""9"" result=""Failed"" site=""Child"" start-time=""2017-03-13 20:22:28Z"" end-time=""2017-03-13 20:22:28Z"" duration=""0.056057"" total=""1"" passed=""0"" failed=""1"" warnings=""0"" inconclusive=""0"" skipped=""0"" asserts=""1"">
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type=""TestSuite"" id=""0-1018"" name=""Examples"" fullname=""NUnit3TestReport.Examples"" runstate=""Runnable"" testcasecount=""9"" result=""Failed"" site=""Child"" start-time=""2017-03-13 20:22:28Z"" end-time=""2017-03-13 20:22:28Z"" duration=""0.052165"" total=""1"" passed=""0"" failed=""1"" warnings=""0"" inconclusive=""0"" skipped=""0"" asserts=""1"">
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type=""TestFixture"" id=""0-1005"" name=""TestClassWithFailure"" fullname=""NUnit3TestReport.Examples.TestClassWithFailure"" classname=""NUnit3TestReport.Examples.TestClassWithFailure"" runstate=""Runnable"" testcasecount=""1"" result=""Failed"" site=""Child"" start-time=""2017-03-13 20:22:28Z"" end-time=""2017-03-13 20:22:28Z"" duration=""0.046262"" total=""1"" passed=""0"" failed=""1"" warnings=""0"" inconclusive=""0"" skipped=""0"" asserts=""1"">
+          <properties>
+            <property name=""Category"" value=""ExcludeOnBuildServer"" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id=""0-1006"" name=""FailingTest"" fullname=""NUnit3TestReport.Examples.TestClassWithFailure.FailingTest"" methodname=""FailingTest"" classname=""NUnit3TestReport.Examples.TestClassWithFailure"" runstate=""Runnable"" seed=""572200901"" result=""Failed"" start-time=""2017-03-13 20:22:28Z"" end-time=""2017-03-13 20:22:28Z"" duration=""0.034799"" asserts=""1"">
+            <failure>
+              <message><![CDATA[  Expected string length 20 but was 16. Strings differ at index 8.
+  Expected: ""this is not the text""
+  But was:  ""this is the text""
+  -------------------^
+]]></message>
+              <stack-trace><![CDATA[at NUnit3TestReport.Examples.TestClassWithFailure.FailingTest() in C:\github\NUnit3-Test-Report\NUnit3TestReport\NUnit3TestReport.Examples\TestClassWithFailure.cs:line 17
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[Test Console Output
+]]></output>
+            <assertions>
+              <assertion result=""Failed"">
+                <message><![CDATA[  Expected string length 20 but was 16. Strings differ at index 8.
+  Expected: ""this is not the text""
+  But was:  ""this is the text""
+  -------------------^
+]]></message>
+                <stack-trace><![CDATA[at NUnit3TestReport.Examples.TestClassWithFailure.FailingTest() in C:\github\NUnit3-Test-Report\NUnit3TestReport\NUnit3TestReport.Examples\TestClassWithFailure.cs:line 17
+]]></stack-trace>
+              </assertion>
+            </assertions>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>";
+
+            // Act
+            var result = Program.GetTestResultData("validfile.txt", xml);
+
+            // Assert
+            Assert.That(result.TestCases.Count, Is.EqualTo(1));
+            Assert.That(result.TestCases[0].FullName, Is.EqualTo("NUnit3TestReport.Examples.TestClassWithFailure.FailingTest"));
         }
     }
 }
