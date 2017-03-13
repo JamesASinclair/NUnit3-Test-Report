@@ -128,7 +128,7 @@ Examples:
             }
             else
             {
-                return $"<tr class='danger'><th>{FileName}</th><td colspan='7'>File could not be parsed</td></tr>";
+                return $"<tr><td>{FileName}</td><th colspan='7' class='text-danger text-bold'>File could not be parsed</th></tr>";
             }
         }
     }

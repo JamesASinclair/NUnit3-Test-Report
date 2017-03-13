@@ -72,6 +72,11 @@
       <Name>NUnit3TestReport</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="EmptyFile.test.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>"$(MSBuildBinPath)\msbuild.exe" $(TargetDir)Test.proj</PostBuildEvent>
