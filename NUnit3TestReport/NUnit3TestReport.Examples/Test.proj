@@ -12,8 +12,9 @@
   <Target Name="Test">
     <ItemGroup>
       <TestDlls Include="$(MSBuildProjectDirectory)\NUnit3TestReport.Examples.dll" />
+      <OldTestFiles Include="$(MSBuildProjectDirectory)\*.test.xml" Exclude="$(MSBuildProjectDirectory)\EmptyFile.test.xml"/>
     </ItemGroup>
-
+    <Delete Files="@(OldTestFiles)" />
     <Exec Command="&quot;$(NUnitConsole)&quot; %(TestDlls.Identity) --framework=net-4.5 --result:$(MSBuildProjectDirectory)\Failures.test.xml" ContinueOnError="true"/>
     <Exec Command="&quot;$(NUnitConsole)&quot; %(TestDlls.Identity) --framework=net-4.5 --where &quot;class=NUnit3TestReport.Examples.TestClassWithPasses&quot; --result:$(MSBuildProjectDirectory)\OnePass.test.xml" ContinueOnError="true"/>
     <Exec Command="&quot;$(NUnitConsole)&quot; %(TestDlls.Identity) --framework=net-4.5 --where &quot;class=NUnit3TestReport.Examples.TestClassWithFailure&quot; --result:$(MSBuildProjectDirectory)\OneFailure.test.xml" ContinueOnError="true"/>

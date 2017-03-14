@@ -132,7 +132,8 @@ Examples:
         {
             if (IsValid)
             {
-                return $@"<tr>
+                var sb = new StringBuilder();
+                sb.AppendLine($@"<tr>
                     <td>{FileName}</td>
                     <th class='{(Result.Equals("Passed") ? "text-success" : "text-danger text-bold")}'>{Result}</th>
                     <td class='text-right'>{Passed}</td>
@@ -141,7 +142,8 @@ Examples:
                     <td class='text-right'>{Skipped}</td>
                     <td class='text-right'>{Total}</td>
                     <td class='text-right'>{TimeSpan.FromSeconds(Duration).ToString(@"h\:mm\:ss")}</td>
-                </tr>";
+                </tr>");
+                return sb.ToString();
             }
             else
             {
