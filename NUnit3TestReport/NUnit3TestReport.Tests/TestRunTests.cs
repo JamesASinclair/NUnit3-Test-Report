@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace NUnit3TestReport.Tests
 {
     [TestFixture]
-    public class TestResultDataTests
+    public class TestRunTests
     {
         [Test]
         public void ToHtml_ReturnsErrorMessageAndFilename_IfTestResultData_IsNotValid()
         {
             // Arrange
-            var testResultData = new TestResultData
+            var testResultData = new TestRun
             {
                 IsValid = false,
                 FileName = "invalid.xml"
@@ -32,7 +32,7 @@ namespace NUnit3TestReport.Tests
         public void ToHtml_ReturnsFailedTestDetails_IfContainsFailedTests()
         {
             // Arrange
-            var testResultData = new TestResultData
+            var testResultData = new TestRun
             {
                 IsValid = true,
                 FileName = "failed.xml",
@@ -56,7 +56,7 @@ namespace NUnit3TestReport.Tests
         public void ToHtml_ReturnsTestDetail_WhenDoesNotContainFailedTests()
         {
             // Arrange
-            var testResultData = new TestResultData
+            var testResultData = new TestRun
             {
                 IsValid = true,
                 FileName = "success.xml",

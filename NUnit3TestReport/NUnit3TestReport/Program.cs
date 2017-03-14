@@ -21,16 +21,16 @@ namespace NUnit3TestReport
 
             var files = GetFiles(args[0]);
 
-            var testResults = new List<TestResultData>();
+            var testRuns = new List<TestRun>();
             foreach (var file in files)
             {
-                testResults.Add(GetTestResultData(Path.GetFileName(file), File.ReadAllText(file)));
+                testRuns.Add(ParseTestRun(Path.GetFileName(file), File.ReadAllText(file)));
             }
 
             var tableRowsHtml = new StringBuilder();
-            foreach (var testResult in testResults)
+            foreach (var testRun in testRuns)
             {
-                tableRowsHtml.AppendLine(testResult.ToHtml());
+                tableRowsHtml.AppendLine(testRun.ToHtml());
             }
 
             var template = GetEmbeddedResource("NUnit3TestReport.Template.html");
@@ -72,12 +72,12 @@ Examples:
             }
         }
 
-        public static TestResultData GetTestResultData(string filename, string fileContents)
+        public static TestRun ParseTestRun(string filename, string fileContents)
         {
             try
             {
                 var doc = XElement.Parse(fileContents);
-                var testResult = new TestResultData
+                var testResult = new TestRun
                 {
                     IsValid = true,
                     FileName = filename,
@@ -94,11 +94,11 @@ Examples:
             }
             catch
             {
-                return new TestResultData() {IsValid = false, FileName = filename };
+                return new TestRun() {IsValid = false, FileName = filename };
             }
         }
 
-        private static void ParseTestCases(TestResultData testResult, XElement doc)
+        private static void ParseTestCases(TestRun testResult, XElement doc)
         {
             foreach (var testCase in doc.Descendants("test-case"))
             {
@@ -115,7 +115,7 @@ Examples:
         }
     }
 
-    public class TestResultData
+    public class TestRun
     {
         public bool IsValid { get; set; }
         public string FileName { get; set; }
