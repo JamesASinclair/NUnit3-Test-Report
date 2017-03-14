@@ -135,7 +135,7 @@ Examples:
             if (IsValid)
             {
                 var html = new StringBuilder();
-                html.AppendLine($@"<tr>
+                html.AppendLine($@"<tr {(FailedTestCases.Any() ? "class='toggle'" : "")}>
                     <td>{FileName}</td>
                     <th class='{(Result.Equals("Passed") ? "text-success" : "text-danger text-bold")}'>{Result}</th>
                     <td class='text-right'>{Passed}</td>
@@ -147,7 +147,7 @@ Examples:
                 </tr>");
                 if (FailedTestCases.Any())
                 {
-                    html.AppendLine("<tr class='noborders'><td colspan='8'>");
+                    html.AppendLine("<tr><td colspan='8'>");
                     foreach (var failure in FailedTestCases)
                     {
                         html.AppendLine($"<pre><strong>{failure.FullName}</strong>" +

@@ -11,8 +11,19 @@
 pre{
     white-space: pre-wrap;
 }
+.hidden {
+    display: none;
+}
+.toggle {
+    cursor: pointer;
+}
     </style>
     <script type="text/javascript">
+        $(function () {
+            $('.toggle').click(function () {
+                $(this).next().toggleClass('hidden');
+            });
+        });
     </script>
 </head>
 <body>
