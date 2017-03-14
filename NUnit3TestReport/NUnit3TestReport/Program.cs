@@ -152,8 +152,7 @@ Examples:
                     {
                         html.AppendLine($"<pre><strong>{failure.FullName}</strong>" +
                                         $"\r\n{HttpUtility.HtmlEncode(failure.FailureMessage)}" +
-                                        $"\r\n{HttpUtility.HtmlEncode(failure.StackTrace)}" +
-                                        $"\r\n{HttpUtility.HtmlEncode(failure.Console)}</pre>");
+                                        $"\r\n{HttpUtility.HtmlEncode(failure.StackTrace)}</pre>");
 
                     }
                     html.AppendLine("</td></tr>");
