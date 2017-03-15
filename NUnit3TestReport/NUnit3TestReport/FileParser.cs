@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using System.Linq;
 
 namespace NUnit3TestReport
 {
@@ -26,7 +28,7 @@ namespace NUnit3TestReport
             return Directory.GetFiles(folder, searchPattern);
         }
 
-        public static TestRun ParseTestRun(string filename, string fileContents)
+        public TestRun ParseTestRun(string filename, string fileContents)
         {
             try
             {
@@ -52,10 +54,14 @@ namespace NUnit3TestReport
             }
         }
 
-        private static void ParseTestCases(TestRun testResult, XElement doc)
+        private Regex LinkRegex = new Regex(@"<test-report-link>(.*?)</test-report-link>");
+
+        private void ParseTestCases(TestRun testResult, XElement doc)
         {
             foreach (var testCase in doc.Descendants("test-case"))
             {
+                var console = testCase.Element("output")?.Value ?? string.Empty;
+                var links = LinkRegex.Matches(console).Cast<Match>().Select(m => m.Groups[1].Value).ToList();
                 testResult.TestCases.Add(new TestCase()
                 {
                     FullName = testCase.Attribute("fullname").Value,
@@ -63,7 +69,8 @@ namespace NUnit3TestReport
                     Duration = double.Parse(testCase.Attribute("duration").Value),
                     FailureMessage = testCase.Element("failure")?.Element("message")?.Value ?? string.Empty,
                     StackTrace = testCase.Element("failure")?.Element("stack-trace")?.Value ?? string.Empty,
-                    Console = testCase.Element("output")?.Value ?? string.Empty,
+                    Console = console,
+                    Links = links,
                 });
             }
         }

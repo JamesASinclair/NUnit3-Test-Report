@@ -8,17 +8,17 @@ namespace NUnit3TestReport.Tests
     public class FileParserTests
     {
         [Test]
-        public void GetTestResultData_IfTheFileContentsCannotBeParse_TheTestResultsShouldBeInvlaid()
+        public void ParseTestRun_IfTheFileContentsCannotBeParsed_TheTestRunShouldBeInvlaid()
         {
             // Arrange/Act
-            var result = FileParser.ParseTestRun("invalidfile.txt", null);
+            var result = new FileParser().ParseTestRun("invalidfile.txt", null);
 
             // Assert
             Assert.That(result.IsValid, Is.False);
         }
 
         [Test]
-        public void GetTestResultData_IfTheFileContentsCanBeParsed_ShouldAssignPropertiesFromXml_AndSetIsValidTrue()
+        public void ParseTestRun_IfTheFileContentsCanBeParsed_PropertiesShouldBeAssigned()
         {
             // Arrange
             string file = @"<?xml version='1.0' encoding='utf-8' standalone='no'?>
@@ -39,7 +39,7 @@ namespace NUnit3TestReport.Tests
 ";
 
             // Act
-            var result = FileParser.ParseTestRun("validfile.txt", file);
+            var result = new FileParser().ParseTestRun("validfile.txt", file);
 
             // Assert
             Assert.That(result.FileName, Is.EqualTo("validfile.txt"));
@@ -54,7 +54,7 @@ namespace NUnit3TestReport.Tests
         }
 
         [Test]
-        public void GetTestResultData_ShouldReturnDataAboutAFailedTestCase()
+        public void ParseTestRun_ShouldReturnDataAboutAFailedTestCase()
         {
             #region xml
             string xml = @"<?xml version=""1.0"" encoding=""utf-8"" standalone=""no""?>
@@ -110,7 +110,7 @@ namespace NUnit3TestReport.Tests
             #endregion
 
             // Act
-            var result = FileParser.ParseTestRun("validfile.txt", xml);
+            var result = new FileParser().ParseTestRun("validfile.txt", xml);
 
             // Assert
             Assert.That(result.IsValid);
@@ -130,7 +130,7 @@ namespace NUnit3TestReport.Tests
         }
 
         [Test]
-        public void GetTestResultData_ShouldReturnDataAboutAPassedTestCase()
+        public void ParseTestRun_ShouldReturnDataAboutAPassedTestCase()
         {
             #region xml
             string xml = @"<?xml version=""1.0"" encoding=""utf-8"" standalone=""no""?>
@@ -174,7 +174,7 @@ namespace NUnit3TestReport.Tests
             #endregion
 
             // Act
-            var result = FileParser.ParseTestRun("validfile.txt", xml);
+            var result = new FileParser().ParseTestRun("", xml);
 
             // Assert
             Assert.That(result.IsValid);
@@ -185,6 +185,80 @@ namespace NUnit3TestReport.Tests
             Assert.That(result.TestCases[0].FailureMessage, Is.EqualTo(string.Empty));
             Assert.That(result.TestCases[0].StackTrace, Is.EqualTo(string.Empty));
             Assert.That(result.TestCases[0].Console, Is.EqualTo(string.Empty));
+        }
+
+        [Test]
+        public void ParseTestRun_ShouldExtractLinks_FromConsoleOutput()
+        {
+            #region xml
+            string xml = @"<?xml version=""1.0"" encoding=""utf-8"" standalone=""no""?>
+<test-run id=""2"" testcasecount=""9"" result=""Failed"" total=""1"" passed=""0"" failed=""1"" inconclusive=""0"" skipped=""0"" asserts=""1"" engine-version=""3.6.1.0"" clr-version=""4.0.30319.42000"" start-time=""2017-03-15 20:28:17Z"" end-time=""2017-03-15 20:28:18Z"" duration=""0.684879"">
+  <command-line><![CDATA[""C:\github\NUnit3-Test-Report\NUnit3TestReport\NUnit3TestReport.Examples\bin\Debug\..\..\..\packages\NUnit.ConsoleRunner.3.6.1\tools\nunit3-console.exe""  C:\github\NUnit3-Test-Report\NUnit3TestReport\NUnit3TestReport.Examples\bin\Debug\NUnit3TestReport.Examples.dll --framework=net-4.5 --where ""class=NUnit3TestReport.Examples.TestClassWithFailureContainingEmbededLinks"" --result:C:\github\NUnit3-Test-Report\NUnit3TestReport\NUnit3TestReport.Examples\bin\Debug\EmbededLinks.test.xml]]></command-line>
+  <test-suite type=""Assembly"" id=""0-1017"" name=""NUnit3TestReport.Examples.dll"" fullname=""C:\github\NUnit3-Test-Report\NUnit3TestReport\NUnit3TestReport.Examples\bin\Debug\NUnit3TestReport.Examples.dll"" runstate=""Runnable"" testcasecount=""9"" result=""Failed"" site=""Child"" start-time=""2017-03-15 20:28:18Z"" end-time=""2017-03-15 20:28:18Z"" duration=""0.081457"" total=""1"" passed=""0"" failed=""1"" warnings=""0"" inconclusive=""0"" skipped=""0"" asserts=""1"">
+    <environment framework-version=""3.6.1.0"" clr-version=""4.0.30319.42000"" os-version=""Microsoft Windows NT 10.0.14393.0"" platform=""Win32NT"" cwd=""C:\github\NUnit3-Test-Report\NUnit3TestReport\NUnit3TestReport.Examples\bin\Debug"" machine-name=""BIOMMAT"" user=""mat.roberts"" user-domain=""BIOMNI-UK"" culture=""en-GB"" uiculture=""en-GB"" os-architecture=""x64"" />
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type=""TestSuite"" id=""0-1018"" name=""NUnit3TestReport"" fullname=""NUnit3TestReport"" runstate=""Runnable"" testcasecount=""9"" result=""Failed"" site=""Child"" start-time=""2017-03-15 20:28:18Z"" end-time=""2017-03-15 20:28:18Z"" duration=""0.059964"" total=""1"" passed=""0"" failed=""1"" warnings=""0"" inconclusive=""0"" skipped=""0"" asserts=""1"">
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type=""TestSuite"" id=""0-1019"" name=""Examples"" fullname=""NUnit3TestReport.Examples"" runstate=""Runnable"" testcasecount=""9"" result=""Failed"" site=""Child"" start-time=""2017-03-15 20:28:18Z"" end-time=""2017-03-15 20:28:18Z"" duration=""0.056442"" total=""1"" passed=""0"" failed=""1"" warnings=""0"" inconclusive=""0"" skipped=""0"" asserts=""1"">
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type=""TestFixture"" id=""0-1007"" name=""TestClassWithFailureContainingEmbededLinks"" fullname=""NUnit3TestReport.Examples.TestClassWithFailureContainingEmbededLinks"" classname=""NUnit3TestReport.Examples.TestClassWithFailureContainingEmbededLinks"" runstate=""Runnable"" testcasecount=""1"" result=""Failed"" site=""Child"" start-time=""2017-03-15 20:28:18Z"" end-time=""2017-03-15 20:28:18Z"" duration=""0.050601"" total=""1"" passed=""0"" failed=""1"" warnings=""0"" inconclusive=""0"" skipped=""0"" asserts=""1"">
+          <properties>
+            <property name=""Category"" value=""ExcludeOnBuildServer"" />
+          </properties>
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-case id=""0-1008"" name=""Test"" fullname=""NUnit3TestReport.Examples.TestClassWithFailureContainingEmbededLinks.Test"" methodname=""Test"" classname=""NUnit3TestReport.Examples.TestClassWithFailureContainingEmbededLinks"" runstate=""Runnable"" seed=""750257848"" result=""Failed"" start-time=""2017-03-15 20:28:18Z"" end-time=""2017-03-15 20:28:18Z"" duration=""0.037905"" asserts=""1"">
+            <failure>
+              <message><![CDATA[  Expected string length 37 but was 35. Strings differ at index 0.
+  Expected: ""if you use the <test-report-link> tag""
+  But was:  ""Links can be made in console output""
+  -----------^
+]]></message>
+              <stack-trace><![CDATA[at NUnit3TestReport.Examples.TestClassWithFailureContainingEmbededLinks.Test() in C:\github\NUnit3-Test-Report\NUnit3TestReport\NUnit3TestReport.Examples\TestClassWithFailureContainingEmbededLinks.cs:line 15
+]]></stack-trace>
+            </failure>
+            <output><![CDATA[<test-report-link>.\Links\LinkedImage.png</test-report-link>
+<test-report-link>.\Links\LinkedHtml.html</test-report-link>
+]]></output>
+            <assertions>
+              <assertion result=""Failed"">
+                <message><![CDATA[  Expected string length 37 but was 35. Strings differ at index 0.
+  Expected: ""if you use the <test-report-link> tag""
+  But was:  ""Links can be made in console output""
+  -----------^
+]]></message>
+                <stack-trace><![CDATA[at NUnit3TestReport.Examples.TestClassWithFailureContainingEmbededLinks.Test() in C:\github\NUnit3-Test-Report\NUnit3TestReport\NUnit3TestReport.Examples\TestClassWithFailureContainingEmbededLinks.cs:line 15
+]]></stack-trace>
+              </assertion>
+            </assertions>
+          </test-case>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>";
+            #endregion
+
+            // Act
+            var result = new FileParser().ParseTestRun("", xml);
+
+            // Assert
+            Assert.That(result.IsValid);
+            Assert.That(result.TestCases.Count, Is.EqualTo(1));
+            Assert.That(result.TestCases[0].Console, Is.EqualTo(
+@"<test-report-link>.\Links\LinkedImage.png</test-report-link>
+<test-report-link>.\Links\LinkedHtml.html</test-report-link>
+"));
+            Assert.That(result.TestCases[0].Links.Count, Is.EqualTo(2));
+            Assert.That(result.TestCases[0].Links[0], Is.EqualTo(@".\Links\LinkedImage.png"));
+            Assert.That(result.TestCases[0].Links[1], Is.EqualTo(@".\Links\LinkedHtml.html"));
         }
     }
 }

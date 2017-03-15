@@ -47,6 +47,7 @@
     <Compile Include="TestCaseWithSomePassesAndFailes.cs" />
     <Compile Include="TestClassWithFailure.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestClassWithFailureContainingEmbededLinks.cs" />
     <Compile Include="TestClassWithFailureInSetup.cs" />
     <Compile Include="TestClassWithInconclusive.cs" />
     <Compile Include="TestClassWithPasses.cs" />

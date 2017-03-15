@@ -12,5 +12,6 @@ namespace NUnit3TestReport
         public string FailureMessage { get; set; }
         public string StackTrace { get; set; }
         public string Console { get; set; }
+        public List<string> Links { get; set; } = new List<string>();
     }
 }
