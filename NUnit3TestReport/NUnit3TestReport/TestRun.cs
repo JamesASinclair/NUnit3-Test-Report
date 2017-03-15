@@ -40,9 +40,7 @@ namespace NUnit3TestReport
                     html.AppendLine("<tr><td colspan='8'>");
                     foreach (var failure in FailedTestCases)
                     {
-                        html.AppendLine($"<pre><strong>{failure.FullName}</strong>" +
-                                        $"\r\n{HttpUtility.HtmlEncode(failure.FailureMessage)}" +
-                                        $"\r\n{HttpUtility.HtmlEncode(failure.StackTrace)}</pre>");
+                        html.AppendLine(failure.ToHtml());
 
                     }
                     html.AppendLine("</td></tr>");
