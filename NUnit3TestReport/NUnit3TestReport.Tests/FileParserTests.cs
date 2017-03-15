@@ -5,13 +5,13 @@ using NUnit.Framework;
 namespace NUnit3TestReport.Tests
 {
     [TestFixture]
-    public class ParseTestRunTests
+    public class FileParserTests
     {
         [Test]
         public void GetTestResultData_IfTheFileContentsCannotBeParse_TheTestResultsShouldBeInvlaid()
         {
             // Arrange/Act
-            var result = Program.ParseTestRun("invalidfile.txt", null);
+            var result = FileParser.ParseTestRun("invalidfile.txt", null);
 
             // Assert
             Assert.That(result.IsValid, Is.False);
@@ -39,7 +39,7 @@ namespace NUnit3TestReport.Tests
 ";
 
             // Act
-            var result = Program.ParseTestRun("validfile.txt", file);
+            var result = FileParser.ParseTestRun("validfile.txt", file);
 
             // Assert
             Assert.That(result.FileName, Is.EqualTo("validfile.txt"));
@@ -110,7 +110,7 @@ namespace NUnit3TestReport.Tests
             #endregion
 
             // Act
-            var result = Program.ParseTestRun("validfile.txt", xml);
+            var result = FileParser.ParseTestRun("validfile.txt", xml);
 
             // Assert
             Assert.That(result.IsValid);
@@ -174,7 +174,7 @@ namespace NUnit3TestReport.Tests
             #endregion
 
             // Act
-            var result = Program.ParseTestRun("validfile.txt", xml);
+            var result = FileParser.ParseTestRun("validfile.txt", xml);
 
             // Assert
             Assert.That(result.IsValid);
