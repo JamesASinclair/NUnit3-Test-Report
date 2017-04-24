@@ -20,16 +20,7 @@ namespace NUnit3TestReport
             }
 
             var testRuns = new FileParser().Parse(args[0]);
-
-            var tableRowsHtml = new StringBuilder();
-            foreach (var testRun in testRuns)
-            {
-                tableRowsHtml.AppendLine(testRun.ToHtml());
-            }
-
-            var template = GetEmbeddedResource("NUnit3TestReport.Template.html");
-            var output = template.Replace("##TestResults##", tableRowsHtml.ToString());
-            output = output.Replace("##FileCount##", testRuns.Count.ToString());
+            var output = new TestReport().Build(testRuns);
             File.WriteAllText(args[1], output);
         }
 

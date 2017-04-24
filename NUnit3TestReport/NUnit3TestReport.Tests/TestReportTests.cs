@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace NUnit3TestReport.Tests
 {
     [TestFixture]
-    public class TestRunTests
+    public class TestReportTests
     {
         [Test]
         public void ToHtml_ReturnsErrorMessageAndFilename_IfTestResultData_IsNotValid()
@@ -21,7 +21,7 @@ namespace NUnit3TestReport.Tests
             };
 
             // Act
-            var result = testResultData.ToHtml();
+            var result = new TestReport().ToHtml(testResultData);
 
             // Assert
             Assert.That(result, Contains.Substring("File could not be parsed"));
@@ -46,7 +46,7 @@ namespace NUnit3TestReport.Tests
             };
 
             // Act
-            var result = testResultData.ToHtml();
+            var result = new TestReport().ToHtml(testResultData);
 
             // Assert
             Assert.That(result, Contains.Substring("Failed"));
@@ -70,7 +70,7 @@ namespace NUnit3TestReport.Tests
             };
 
             // Act
-            var result = testResultData.ToHtml();
+            var result = new TestReport().ToHtml(testResultData);
 
             // Assert
             Assert.That(result, Contains.Substring("success.xml"));
