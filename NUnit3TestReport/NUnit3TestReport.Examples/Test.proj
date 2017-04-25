@@ -22,5 +22,6 @@
     <Exec Command="&quot;$(NUnitConsole)&quot; %(TestDlls.Identity) --framework=net-4.5 --where &quot;class=NUnit3TestReport.Examples.TestClassWithMultiLineConsoleOutput&quot; --result:$(MSBuildProjectDirectory)\MultilineConsole.test.xml" ContinueOnError="true"/>
     <Exec Command="NUnit3TestReport.exe -f $(MSBuildProjectDirectory)\*test.xml -o $(MSBuildProjectDirectory)\test-report.html" />
     <Exec Command="NUnit3TestReport.exe -f $(MSBuildProjectDirectory)\*test.xml -o $(MSBuildProjectDirectory)\console-report.html -consolereport" />
+    <Exec Command="NUnit3TestReport.exe -f $(MSBuildProjectDirectory)\*test.xml -o $(MSBuildProjectDirectory)\timing-report.html -timingreport" />
   </Target>  
 </Project>

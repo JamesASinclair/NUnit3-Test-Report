@@ -128,6 +128,19 @@ namespace NUnit3TestReport.Tests
             Assert.That(File.ReadAllText(OutputFile), Does.Contain("<title>NUnit 3 Console Output Report</title>"));
         }
 
+        [TestCase("-timingreport")]
+        [TestCase("-d")]
+        public void Exe_WillProduceTheTimingReport_IfTimingReportSpecified(string reportOption)
+        {
+            // Act
+            string output = null;
+            var exitcode = CreateProcess(ExePath, $@"-f .\FilePatternTests\TestFile1.txt -o {OutputFile} {reportOption}", out output);
+
+            // Assert
+            Assert.That(exitcode, Is.EqualTo(0), output);
+            Assert.That(File.ReadAllText(OutputFile), Does.Contain("<title>NUnit 3 Timing Report</title>"));
+        }
+
         [Test]
         public void Exe_ShouldProduceAFile_WithTheNameOfTheSecondArg()
         {

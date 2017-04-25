@@ -12,20 +12,22 @@ namespace NUnit3TestReport
 {
     public class Program
     {
+        public enum ReportType { TestReport, ConsoleReport, TimingReport};
+
         public static void Main(string[] args)
         {
             var showHelp = false;
-            var testReport = false;
-            var consoleReport = false;
             string inputFilePattern = null;
             string outputFile = null;
+            var reportType = ReportType.TestReport;
 
             var optionSet = new OptionSet()
             {
                 {"f=", "The input file pattern", v => inputFilePattern = v},
                 {"o=", "The output file", v => outputFile = v},
-                {"testreport|t", "Generate the test report", v => testReport = v != null},
-                {"consolereport|c", "Generate Console Report", v => consoleReport = v != null },
+                {"testreport|t", "Generate the test report", v => reportType = ReportType.TestReport },
+                {"consolereport|c", "Generate Console Report", v => reportType = ReportType.ConsoleReport },
+                {"timingreport|d", "Generate Timing Report", v => reportType = ReportType.TimingReport },
                 { "?|h|help", "Show help", v => showHelp = v != null },
             };
 
@@ -60,10 +62,21 @@ namespace NUnit3TestReport
             var testRuns = new FileParser().Parse(inputFilePattern);
 
             IReportBuilder reportBuilder;
-            if(consoleReport)
-                reportBuilder = new ConsoleOutputReport();
-            else
-                reportBuilder = new TestReport();
+            switch (reportType)
+            {
+                case ReportType.TestReport:
+                    reportBuilder = new TestReport();
+                    break;
+                case ReportType.ConsoleReport:
+                    reportBuilder = new ConsoleOutputReport();
+                    break;
+                case ReportType.TimingReport:
+                    reportBuilder = new TimingReport();
+                    break;
+                default:
+                    reportBuilder = new TestReport();
+                    break;
+            }
 
             var output = reportBuilder.Build(testRuns);
             File.WriteAllText(outputFile, output);
@@ -80,7 +93,7 @@ Version {info.ProductVersion}
 {info.Comments}
 
 Usage:
-    {info.InternalName} -f <input-path-with-wildcards> -o <output-path> [-testreport|-consolereport]
+    {info.InternalName} -f <input-path-with-wildcards> -o <output-path> [-testreport|-consolereport|-timingreport]
 Examples:
     Single input file: {info.InternalName} -f TestResults.xml -o TestResult.html
     Folder:            {info.InternalName} -f C:\Folder\* -o TestResult.html

@@ -53,6 +53,7 @@
     <Compile Include="TestReport.cs" />
     <Compile Include="TestCase.cs" />
     <Compile Include="TestRun.cs" />
+    <Compile Include="TimingReport.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -62,6 +63,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ConsoleOutputTemplate.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TimingReportTemplate.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
