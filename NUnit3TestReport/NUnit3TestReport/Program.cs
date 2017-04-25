@@ -21,6 +21,8 @@ namespace NUnit3TestReport
 
             var testRuns = new FileParser().Parse(args[0]);
             var output = new TestReport().Build(testRuns);
+
+            //var output = new ConsoleOutputReport().Build(testRuns);
             File.WriteAllText(args[1], output);
         }
 

@@ -1,0 +1,45 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <title>NUnit 3 Test Report</title>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js'></script>
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css'/>
+    <style>
+pre{
+    white-space: pre-wrap;
+}
+.hidden {
+    display: none;
+}
+.toggle {
+    cursor: pointer;
+}
+    </style>
+    <script type="text/javascript">
+        $(function () {
+            $('.toggle').click(function () {
+                $(this).next().toggleClass('hidden');
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container-fluid">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Test</th>
+                    <th>Console Output</th>
+                </tr>
+            </thead>
+            <tbody>
+                ##TestResults##
+            </tbody>
+        </table>
+        <p>##FileCount## file(s) processed</p>
+    </div>
+</body>
+</html>
