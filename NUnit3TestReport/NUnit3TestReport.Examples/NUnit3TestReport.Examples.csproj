@@ -50,6 +50,7 @@
     <Compile Include="TestClassWithFailureContainingEmbededLinks.cs" />
     <Compile Include="TestClassWithFailureInSetup.cs" />
     <Compile Include="TestClassWithInconclusive.cs" />
+    <Compile Include="TestClassWithMultiLineConsoleOutput.cs" />
     <Compile Include="TestClassWithPasses.cs" />
     <Compile Include="TestClassWithSkipped.cs" />
   </ItemGroup>

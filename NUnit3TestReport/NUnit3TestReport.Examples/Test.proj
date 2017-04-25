@@ -19,6 +19,8 @@
     <Exec Command="&quot;$(NUnitConsole)&quot; %(TestDlls.Identity) --framework=net-4.5 --where &quot;class=NUnit3TestReport.Examples.TestClassWithPasses&quot; --result:$(MSBuildProjectDirectory)\OnePass.test.xml" ContinueOnError="true"/>
     <Exec Command="&quot;$(NUnitConsole)&quot; %(TestDlls.Identity) --framework=net-4.5 --where &quot;class=NUnit3TestReport.Examples.TestClassWithFailure&quot; --result:$(MSBuildProjectDirectory)\OneFailure.test.xml" ContinueOnError="true"/>
     <Exec Command="&quot;$(NUnitConsole)&quot; %(TestDlls.Identity) --framework=net-4.5 --where &quot;class=NUnit3TestReport.Examples.TestClassWithFailureContainingEmbededLinks&quot; --result:$(MSBuildProjectDirectory)\EmbededLinks.test.xml" ContinueOnError="true"/>
-    <Exec Command="NUnit3TestReport.exe -f $(MSBuildProjectDirectory)\*test.xml -o $(MSBuildProjectDirectory)\output.html" />
+    <Exec Command="&quot;$(NUnitConsole)&quot; %(TestDlls.Identity) --framework=net-4.5 --where &quot;class=NUnit3TestReport.Examples.TestClassWithMultiLineConsoleOutput&quot; --result:$(MSBuildProjectDirectory)\MultilineConsole.test.xml" ContinueOnError="true"/>
+    <Exec Command="NUnit3TestReport.exe -f $(MSBuildProjectDirectory)\*test.xml -o $(MSBuildProjectDirectory)\test-report.html" />
+    <Exec Command="NUnit3TestReport.exe -f $(MSBuildProjectDirectory)\*test.xml -o $(MSBuildProjectDirectory)\console-report.html -consolereport" />
   </Target>  
 </Project>
