@@ -25,8 +25,24 @@ namespace NUnit3TestReport.Tests
             }
         }
 
+        [TestCase("-?")]
+        [TestCase("-h")]
+        [TestCase("-help")]
+        public void Exe_ShouldPrintUsageInfo_And_ExitsWithCode0_IfSuppliedWithHelpOption(string helpOption)
+        {
+            // Arrange
+
+            // Act
+            string output = null;
+            var exitcode = CreateProcess(ExePath, $"{helpOption}", out output);
+
+            // Assert
+            Assert.That(exitcode, Is.EqualTo(0));
+            Assert.That(output, Does.Contain("Usage:"));
+        }
+
         [Test]
-        public void Exe_ShouldPrintUsageInfo_And_ExitsWithCode1_IfNotSuppliedWith2Args()
+        public void Exe_ShouldPrintUsageInfo_And_ExitsWithCode1_IfNotSuppliedWith_MinusFOption()
         {
             // Arrange
 
@@ -36,7 +52,53 @@ namespace NUnit3TestReport.Tests
 
             // Assert
             Assert.That(exitcode, Is.EqualTo(1));
-            Assert.That(output, Does.StartWith("NUnit3TestReport.exe"));
+            Assert.That(output, Does.Contain("Usage:"));
+            Assert.That(output, Does.Contain("Missing required option -f."));
+        }
+
+        [Test]
+        public void Exe_ShouldPrintUsageInfo_And_ExitsWithCode1_IfArgumentNotSuppliedFor_MinusF()
+        {
+            // Arrange
+
+            // Act
+            string output = null;
+            var exitcode = CreateProcess(ExePath, "-f", out output);
+
+            // Assert
+            Assert.That(exitcode, Is.EqualTo(1));
+            Assert.That(output, Does.Contain("Usage:"));
+            Assert.That(output, Does.Contain("Missing required value for option '-f'."));
+        }
+
+        [Test]
+        public void Exe_ShouldPrintUsageInfo_And_ExitsWithCode1_IfNotSuppliedWith_MinusOOption()
+        {
+            // Arrange
+
+            // Act
+            string output = null;
+            var exitcode = CreateProcess(ExePath, $@"-f .\FilePatternTests\TestFile1.txt", out output);
+
+            // Assert
+            Assert.That(exitcode, Is.EqualTo(1));
+            Assert.That(output, Does.Contain("Usage:"));
+            Assert.That(output, Does.Contain("Missing required option -o."));
+        }
+
+        [Test]
+        public void Exe_ShouldPrintUsageInfo_And_ExitsWithCode1_IfArgumentNotSuppliedFor_MinusO()
+        {
+            // Arrange
+
+            // Act
+            string output = null;
+            var exitcode = CreateProcess(ExePath, $@"-f .\FilePatternTests\TestFile1.txt -o", out output);
+
+            // Assert
+            Assert.That(exitcode, Is.EqualTo(1));
+            Assert.That(output, Does.Contain("Usage:"));
+            Assert.That(output, Does.Contain("Missing required value for option '-o'"));
         }
 
         [Test]
@@ -47,7 +109,7 @@ namespace NUnit3TestReport.Tests
 
             // Act
             string output = null;
-            var exitcode = CreateProcess(ExePath, $@".\TestFiles {OutputFile}", out output);
+            var exitcode = CreateProcess(ExePath, $@"-f .\TestFiles -o {OutputFile}", out output);
 
             // Assert
             Assert.That(exitcode, Is.EqualTo(0), output);
@@ -59,7 +121,7 @@ namespace NUnit3TestReport.Tests
         {
             // Act
             string output = null;
-            var exitcode = CreateProcess(ExePath, $@".\FilePatternTests\TestFile1.txt {OutputFile}", out output);
+            var exitcode = CreateProcess(ExePath, $@"-f .\FilePatternTests\TestFile1.txt -o {OutputFile}", out output);
 
             // Assert
             Assert.That(exitcode, Is.EqualTo(0), output);
@@ -71,7 +133,7 @@ namespace NUnit3TestReport.Tests
         {
             // Act
             string output = null;
-            var exitcode = CreateProcess(ExePath, $@".\FilePatternTests\* {OutputFile}", out output);
+            var exitcode = CreateProcess(ExePath, $@"-f .\FilePatternTests\* -o {OutputFile}", out output);
 
             // Assert
             Assert.That(exitcode, Is.EqualTo(0), output);
@@ -83,7 +145,7 @@ namespace NUnit3TestReport.Tests
         {
             // Act
             string output = null;
-            var exitcode = CreateProcess(ExePath, $@".\FilePatternTests\*.txt {OutputFile}", out output);
+            var exitcode = CreateProcess(ExePath, $@"-f .\FilePatternTests\*.txt -o {OutputFile}", out output);
 
             // Assert
             Assert.That(exitcode, Is.EqualTo(0), output);
@@ -95,7 +157,7 @@ namespace NUnit3TestReport.Tests
         {
             // Act
             string output = null;
-            var exitcode = CreateProcess(ExePath, $@".\FileContentTests\EmptyFile.xml {OutputFile}", out output);
+            var exitcode = CreateProcess(ExePath, $@"-f .\FileContentTests\EmptyFile.xml -o {OutputFile}", out output);
 
             // Assert
             Assert.That(exitcode, Is.EqualTo(0), output);
