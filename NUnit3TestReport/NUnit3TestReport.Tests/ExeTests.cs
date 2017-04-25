@@ -101,6 +101,33 @@ namespace NUnit3TestReport.Tests
             Assert.That(output, Does.Contain("Missing required value for option '-o'"));
         }
 
+        [TestCase("")]
+        [TestCase("-testreport")]
+        [TestCase("-t")]
+        public void Exe_WillProduceTheTestReport_ByDefault_OrWithWithTestReportOption(string reportOption)
+        {
+            // Act
+            string output = null;
+            var exitcode = CreateProcess(ExePath, $@"-f .\FilePatternTests\TestFile1.txt -o {OutputFile} {reportOption}", out output);
+
+            // Assert
+            Assert.That(exitcode, Is.EqualTo(0), output);
+            Assert.That(File.ReadAllText(OutputFile), Does.Contain("<title>NUnit 3 Test Report</title>"));
+        }
+
+        [TestCase("-consolereport")]
+        [TestCase("-c")]
+        public void Exe_WillProduceTheConsoleReport_IfConsoleReportSpecified(string reportOption)
+        {
+            // Act
+            string output = null;
+            var exitcode = CreateProcess(ExePath, $@"-f .\FilePatternTests\TestFile1.txt -o {OutputFile} {reportOption}", out output);
+
+            // Assert
+            Assert.That(exitcode, Is.EqualTo(0), output);
+            Assert.That(File.ReadAllText(OutputFile), Does.Contain("<title>NUnit 3 Console Output Report</title>"));
+        }
+
         [Test]
         public void Exe_ShouldProduceAFile_WithTheNameOfTheSecondArg()
         {

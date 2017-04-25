@@ -14,20 +14,24 @@ namespace NUnit3TestReport
     {
         public static void Main(string[] args)
         {
-            var show_help = false;
+            var showHelp = false;
+            var testReport = false;
+            var consoleReport = false;
             string inputFilePattern = null;
             string outputFile = null;
 
-            var p = new OptionSet()
+            var optionSet = new OptionSet()
             {
                 {"f=", "The input file pattern", v => inputFilePattern = v},
                 {"o=", "The output file", v => outputFile = v},
-                { "?|h|help", "Show help", v => show_help = v != null },
+                {"testreport|t", "Generate the test report", v => testReport = v != null},
+                {"consolereport|c", "Generate Console Report", v => consoleReport = v != null },
+                { "?|h|help", "Show help", v => showHelp = v != null },
             };
 
             try
             {
-                p.Parse(args);
+                optionSet.Parse(args);
             }
             catch (OptionException e)
             {
@@ -35,7 +39,7 @@ namespace NUnit3TestReport
                 Environment.Exit(1);
             }
 
-            if (show_help)
+            if (showHelp)
             {
                 PrintUsage();
                 Environment.Exit(0);
@@ -54,9 +58,14 @@ namespace NUnit3TestReport
             }
 
             var testRuns = new FileParser().Parse(inputFilePattern);
-            var output = new TestReport().Build(testRuns);
 
-            //var output = new ConsoleOutputReport().Build(testRuns);
+            IReportBuilder reportBuilder;
+            if(consoleReport)
+                reportBuilder = new ConsoleOutputReport();
+            else
+                reportBuilder = new TestReport();
+
+            var output = reportBuilder.Build(testRuns);
             File.WriteAllText(outputFile, output);
         }
 
@@ -71,7 +80,7 @@ Version {info.ProductVersion}
 {info.Comments}
 
 Usage:
-    {info.InternalName} -f [input-path-with-wildcards] -o [output-path]
+    {info.InternalName} -f <input-path-with-wildcards> -o <output-path> [-testreport|-consolereport]
 Examples:
     Single input file: {info.InternalName} -f TestResults.xml -o TestResult.html
     Folder:            {info.InternalName} -f C:\Folder\* -o TestResult.html
