@@ -43,7 +43,7 @@ namespace NUnit3TestReport
             if (string.IsNullOrWhiteSpace(testCase.Console))
                 return string.Empty;
             else
-                return $"<tr><td>{testCase.FullName}</td><td><pre>{testCase.Console}</pre></td></tr>";
+                return $"<tr><td>{testCase.FullName}</td><td><pre>{HttpUtility.HtmlEncode(testCase.Console)}</pre></td></tr>";
         }
     }
 }
